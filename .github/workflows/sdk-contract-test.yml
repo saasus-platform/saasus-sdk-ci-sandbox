@@ -58,13 +58,30 @@ jobs:
           owner: Anti-Pattern-Inc
           repositories: saasus-api
 
-      # The api repository and its latest stable tag are resolved inside the action.
+      # The api repository is resolved inside the action; the ref is pinned
+      # below.
+      #
+      # TEMPORARY: ref is api main, not the latest stable tag.
+      #
+      # The spec fixes this suite depends on are merged to api main but are not
+      # in any tag yet: the latest stable tag v1.13.14 (2026-10-09) predates
+      # them, and cutting a new api tag is not cheap. Against v1.13.14 the mock
+      # answers 500 to 13 operations because it cannot produce the response the
+      # spec declares — PricingUnit's oneOf members are not mutually exclusive
+      # ("must match exactly one schema in oneOf") and several string-typed
+      # fields carry unquoted numeric examples ("must be string"). Those are
+      # spec defects, already fixed on main.
+      #
+      # Revert to the default (omit ref) as soon as an api tag contains them.
+      # Until then CI depends on a moving ref: an unrelated api merge can turn
+      # a green PR red, and a re-run of the same SDK commit is not reproducible.
       - name: Fetch OpenAPI spec
         id: spec
         uses: saasus-platform/github-actions/.github/actions/fetch-openapi-spec@d932828fd89316e931ea89f50695b4f83c2a3bd5 # github-actions main
         with:
           token: ${{ steps.api-token.outputs.token }}
           dest: openapi-spec
+          ref: main
 
       # The committed generated code is the artifact that gets merged, so it is
       # what is built here; the api repo's "Update SDK" workflow runs
