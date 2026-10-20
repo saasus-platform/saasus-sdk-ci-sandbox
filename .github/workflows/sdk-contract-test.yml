@@ -77,7 +77,7 @@ jobs:
       # a green PR red, and a re-run of the same SDK commit is not reproducible.
       - name: Fetch OpenAPI spec
         id: spec
-        uses: saasus-platform/github-actions/.github/actions/fetch-openapi-spec@48bc2caf1b0af5c00e1d0f93cd95b0641e387fa4 # github-actions main
+        uses: saasus-platform/github-actions/.github/actions/fetch-openapi-spec@75b272e80ca758ebfa5150f40f2b447ed13b7854 # github-actions main
         with:
           token: ${{ steps.api-token.outputs.token }}
           ref: main
@@ -115,7 +115,7 @@ jobs:
       # Static mode: responses come from the spec's examples, which is how the
       # spec makes oneOf responses resolvable. Dynamic mode would ignore them.
       - name: Start Prism mocks
-        uses: saasus-platform/github-actions/.github/actions/setup-prism@48bc2caf1b0af5c00e1d0f93cd95b0641e387fa4 # github-actions main
+        uses: saasus-platform/github-actions/.github/actions/setup-prism@75b272e80ca758ebfa5150f40f2b447ed13b7854 # github-actions main
         with:
           spec-dir: ${{ steps.spec.outputs.spec-dir }}
           modules: ${{ steps.spec.outputs.modules }}
@@ -136,7 +136,7 @@ jobs:
 
       - name: Resolve previous SDK stable tag
         id: old-tag
-        uses: saasus-platform/github-actions/.github/actions/resolve-latest-stable-tag@48bc2caf1b0af5c00e1d0f93cd95b0641e387fa4 # github-actions main
+        uses: saasus-platform/github-actions/.github/actions/resolve-latest-stable-tag@75b272e80ca758ebfa5150f40f2b447ed13b7854 # github-actions main
 
       - name: Checkout old SDK
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
