@@ -129,6 +129,7 @@ jobs:
       - name: (B) Latest SDK contract
         env:
           CONTRACT_SPEC_DIR: ${{ steps.spec.outputs.spec-dir }}
+          CONTRACT_MODULES: ${{ steps.spec.outputs.modules }}
           # The latest SDK must cover every spec operation.
           CONTRACT_REQUIRE_COMPLETE: "true"
         run: >
@@ -158,6 +159,7 @@ jobs:
       - name: (C) Old SDK forward-compat (bundled suite)
         env:
           CONTRACT_SPEC_DIR: ${{ steps.spec.outputs.spec-dir }}
+          CONTRACT_MODULES: ${{ steps.spec.outputs.modules }}
         working-directory: old-sdk
         run: >
           dotnet test tests/Contract/SaaSusSdk.Contract.Tests.csproj --configuration Release
