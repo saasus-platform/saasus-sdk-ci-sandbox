@@ -3,20 +3,13 @@ using Xunit.Abstractions;
 
 namespace SaasusSdk.Contract;
 
-/// <summary>
-/// xunit entry point for the contract test — the stable
-/// <c>dotnet test tests/Contract/SaaSusSdk.Contract.Tests.csproj</c> surface.
-/// </summary>
-/// <remarks>
-/// Each (operation, call form) is its own theory case, so both appear in the
-/// test report and failures are counted individually; the work is delegated to
-/// <see cref="ContractEngine"/> and every case must round-trip.
-/// <para>Modules with no configured Prism endpoint contribute no case, so the
-/// suite runs one module locally and all of them in CI. With no case at all —
-/// no mock reachable or no spec directory — xunit fails the theory for missing
-/// data, which is intended: the run proved nothing.</para>
-/// <para>Synthetic data only; no response body, token or PII is logged.</para>
-/// </remarks>
+// Entry point of the contract test: dotnet test tests/Contract.
+//
+// Each (operation, call form) is its own theory case so that failures are
+// counted and named individually in the report. A module with no Prism endpoint
+// contributes no case, which is how one module can be run locally and all of
+// them in CI; with no case at all xunit fails the theory for missing data,
+// which is intended — the run proved nothing.
 public class ContractTest
 {
     private readonly ITestOutputHelper _output;
@@ -30,11 +23,26 @@ public class ContractTest
     [MemberData(nameof(Cases))]
     public Task Contract(string caseId) => ContractEngine.Cases[caseId].InvokeAsync();
 
-    /// <summary>
-    /// A module whose Prism mock is configured must have a spec to exercise it
-    /// with. Without this, such a module would contribute no case and the run
-    /// would pass with none of its operations verified.
-    /// </summary>
+    [Fact]
+    public void ModuleListIsProvided()
+    {
+        Assert.True(ContractEngine.Modules.Length > 0,
+            "CONTRACT_MODULES is empty: it carries the module list from the fetch-openapi-spec action"
+            + " (locally: CONTRACT_MODULES=\"auth\" dotnet test tests/Contract)");
+    }
+
+    // A module added to generate.sh but not to the shared module list would
+    // contribute no case, so all of its operations would go unverified.
+    [Fact]
+    public void EveryGeneratedModuleIsUnderTest()
+    {
+        var untested = ContractEngine.GeneratedModules()
+            .Except(ContractEngine.Modules, StringComparer.Ordinal)
+            .ToList();
+        Assert.True(untested.Count == 0, "modules generated into the SDK but absent from CONTRACT_MODULES"
+            + " (their operations would go unverified): " + string.Join(", ", untested));
+    }
+
     [Fact]
     public void ConfiguredModulesHaveSpec()
     {
@@ -43,12 +51,8 @@ public class ContractTest
             + " (their operations would go unverified): " + string.Join(", ", missing));
     }
 
-    /// <summary>
-    /// Every spec operation of a configured module must map to a generated SDK
-    /// method. Enforced for the latest SDK (<c>CONTRACT_REQUIRE_COMPLETE=true</c>
-    /// in workflow step B); an older SDK (C) legitimately lacks newer
-    /// operations, so there the check only reports that it is not enforced.
-    /// </summary>
+    // Enforced only for the latest SDK (B): an older SDK (C) legitimately lacks
+    // operations added to the spec after it was released.
     [Fact]
     public void AllOperationsEnumerated()
     {
