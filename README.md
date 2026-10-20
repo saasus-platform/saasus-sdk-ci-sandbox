@@ -211,3 +211,4 @@ docker compose run --rm csharp bash
 ```
 
 ソースコードはコンテナの`/workspace`へマウントされるため、macOS側で行った変更がすぐ反映されます。NuGetパッケージは名前付きボリュームにキャッシュされます。このプロジェクト自体は実行可能アプリではなくSDKライブラリなので、既定コマンドは`dotnet run`ではなく`dotnet build`です。
+
