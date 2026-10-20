@@ -7,7 +7,7 @@ namespace SaasusSdk.Contract;
 /// <remarks>
 /// The single source is the environment variable <c>PRISM_URL_&lt;MODULE&gt;</c>,
 /// exported by the setup-prism action in CI and set by hand for a local run
-/// (<c>PRISM_URL_AUTH=http://127.0.0.1:4010 dotnet test tests/Contract</c>).
+/// (<c>CONTRACT_MODULES=auth PRISM_URL_AUTH=http://127.0.0.1:4010 dotnet test tests/Contract</c>).
 /// </remarks>
 internal static class PrismEndpoints
 {

@@ -27,9 +27,25 @@ namespace SaasusSdk.Contract;
 /// </remarks>
 internal static class ContractEngine
 {
-    /// <summary>All SDK modules. A module is tested only if it is generated AND has a Prism endpoint.</summary>
+    /// <summary>
+    /// The modules under test, taken from <c>CONTRACT_MODULES</c>. A module is
+    /// tested only if it is generated AND has a Prism endpoint.
+    /// </summary>
+    /// <remarks>
+    /// The list itself is declared in exactly one place — the shared
+    /// fetch-openapi-spec action — and reaches every consumer from there: the
+    /// workflow feeds that action's <c>modules</c> output both to the Prism
+    /// setup and to this variable, so the specs fetched, the mocks started and
+    /// the modules enumerated here cannot drift apart.
+    /// <para>An unset variable yields no module, hence no case, which
+    /// <see cref="ContractTest.ModuleListIsProvided"/> reports. A built-in
+    /// default is deliberately absent: it would be a second copy of the list,
+    /// and it would let the suite silently test fewer modules than were
+    /// fetched.</para>
+    /// </remarks>
     internal static readonly string[] Modules =
-        { "auth", "pricing", "billing", "awsmarketplace", "integration", "apilog", "communication" };
+        (Environment.GetEnvironmentVariable("CONTRACT_MODULES") ?? string.Empty)
+            .Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries);
 
     /// <summary>The single assembly all generated modules are compiled into.</summary>
     private static readonly Assembly SdkAssembly = typeof(authapi.Client.Configuration).Assembly;
@@ -89,6 +105,28 @@ internal static class ContractEngine
     internal static IEnumerable<string> ModulesMissingSpec() =>
         Modules.Where(module => PrismEndpoints.UrlForOrNull(module) != null
             && SpecDocument.LoadOrNull(SpecDir, module) == null);
+
+    /// <summary>
+    /// The modules this SDK actually generated, read from the assembly's
+    /// <c>&lt;module&gt;api.Api</c> namespaces.
+    /// </summary>
+    /// <remarks>
+    /// Derived from the compiled code rather than from a list, so it can be
+    /// compared against <see cref="Modules"/> without becoming a second copy
+    /// of it. That comparison is what catches a module the SDK generates
+    /// (generate.sh) but nobody fetched a spec or started a mock for, which
+    /// would otherwise go unverified in silence.
+    /// </remarks>
+    internal static IEnumerable<string> GeneratedModules()
+    {
+        const string suffix = "api.Api";
+        return SdkAssembly.GetTypes()
+            .Select(type => type.Namespace)
+            .Where(ns => ns != null && ns.EndsWith(suffix, StringComparison.Ordinal))
+            .Select(ns => ns!.Substring(0, ns!.Length - suffix.Length))
+            .Distinct(StringComparer.Ordinal)
+            .OrderBy(module => module, StringComparer.Ordinal);
+    }
 
     private static string? SpecDir => Environment.GetEnvironmentVariable("CONTRACT_SPEC_DIR");
 

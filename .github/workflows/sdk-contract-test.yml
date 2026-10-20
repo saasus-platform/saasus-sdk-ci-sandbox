@@ -122,13 +122,17 @@ jobs:
           modules: ${{ steps.spec.outputs.modules }}
           base-port: "4010"
 
-      # The suite enumerates every spec operation and reads the per-module mock
-      # URLs from the PRISM_URL_<MODULE> variables exported above. The trx
-      # report is kept as evidence (uploaded below): every case that ran and its
-      # result is in the test display names.
+      # The suite enumerates every spec operation of the modules named in
+      # CONTRACT_MODULES and reads the per-module mock URLs from the
+      # PRISM_URL_<MODULE> variables exported above. The module list is
+      # declared once, by the fetch-openapi-spec action, and is passed from
+      # there to the Prism setup and to the suite, so no copy of it exists
+      # here. The trx report is kept as evidence (uploaded below): every case
+      # that ran and its result is in the test display names.
       - name: (B) Latest SDK contract
         env:
           CONTRACT_SPEC_DIR: ${{ steps.spec.outputs.spec-dir }}
+          CONTRACT_MODULES: ${{ steps.spec.outputs.modules }}
           # The latest SDK must cover every spec operation.
           CONTRACT_REQUIRE_COMPLETE: "true"
         run: >
@@ -158,6 +162,7 @@ jobs:
       - name: (C) Old SDK forward-compat (bundled suite)
         env:
           CONTRACT_SPEC_DIR: ${{ steps.spec.outputs.spec-dir }}
+          CONTRACT_MODULES: ${{ steps.spec.outputs.modules }}
         working-directory: old-sdk
         run: >
           dotnet test tests/Contract/SaaSusSdk.Contract.Tests.csproj --configuration Release
