@@ -180,3 +180,5 @@ jobs:
             csharp/contract-reports/**
             latest-release/csharp/contract-reports/**
           if-no-files-found: ignore
+
+# 検証実行用マーカー: v2.0.0 タグに対して (A)(B)(C) が緑になることの確認。マージしない。
