@@ -1,26 +1,13 @@
-# Build directories
-bin/
-obj/
+# サンドボックス全体の設定。各言語ツリーは自分の .gitignore を持ち、
+# そちらは対応する本番SDKリポジトリのコピー（ミラーを保つため編集しない）。
 
-# Ignore all YAML files
+.worktrees/
+
+# spec を手元に落として Prism を起動する運用なので、取り込んだ spec が
+# 誤って commit されないように YAML は既定で無視する。ワークフローだけ例外。
 *.yml
-
-# But NOT these specific ones
 !/.github/
 !/.github/workflows/
-!/.github/workflows/publish-nuget.yml
-!/.github/workflows/test-publish-nuget.yml
-!/.github/workflows/sdk-contract-test.yml
+!/.github/workflows/*.yml
 
-.env
-.env.*
-!.env.example
-!.env_sample
-
-tests/E2E/Snapshots/*/story_snapshots/
-tests/E2E/Snapshots/*/story_validations/
-tests/E2E/Snapshots/*/story_comparisons/
-tests/E2E/Snapshots/*/story_reports/
-
-# Run reports written by E2E_REPORT_JSON (see tests/E2E/*/README.md)
-artifacts/
+.DS_Store

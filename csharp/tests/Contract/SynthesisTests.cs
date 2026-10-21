@@ -3,12 +3,10 @@ using Xunit;
 
 namespace SaasusSdk.Contract;
 
-/// <summary>
-/// Covers the input synthesis and the argument binding on their own, without a
-/// mock: the specs in use declare neither header parameters nor anyOf bodies,
-/// so <see cref="ContractTest"/> would not exercise either path, and the
-/// forward-compatibility shape below only occurs against a released SDK.
-/// </summary>
+// Input synthesis and argument binding on their own, without a mock: the specs
+// in use declare neither header parameters nor anyOf bodies, so ContractTest
+// exercises neither path, and the forward-compatibility shape below only occurs
+// against a released SDK.
 public class SynthesisTests
 {
     private const string ParameterSpec = """
@@ -78,12 +76,8 @@ public class SynthesisTests
                   example: usage-unit
         """;
 
-    /// <summary>
-    /// Path, query and header parameters all reach the argument of the matching
-    /// name, and the generator's own <c>operationIndex</c> argument keeps its
-    /// default. A header parameter that was dropped would leave the request
-    /// incomplete without any case failing.
-    /// </summary>
+    // A dropped header parameter would leave the request incomplete without any
+    // case failing.
     [Fact]
     public void BindsPathQueryAndHeaderParametersByName()
     {
@@ -94,11 +88,9 @@ public class SynthesisTests
         Assert.Equal(new object?[] { "tenant-1", 10, "referer-1", 0 }, args);
     }
 
-    /// <summary>
-    /// When the spec adds a parameter, an SDK generated before it does not
-    /// declare the argument. That backward-compatible change must not fail
-    /// before the request is sent: the parameter is simply not supplied.
-    /// </summary>
+    // An SDK generated before the spec added a parameter does not declare the
+    // argument. That backward-compatible change must not fail before the request
+    // is sent.
     [Fact]
     public void ToleratesParameterMissingFromOlderSdk()
     {
@@ -109,11 +101,7 @@ public class SynthesisTests
         Assert.Equal(new object?[] { "tenant-1", "referer-1", 0 }, args);
     }
 
-    /// <summary>
-    /// An argument that matches no spec parameter and is not the request body
-    /// cannot be filled from the spec. Supplying a constant would send a value
-    /// the spec never declared, so binding fails instead.
-    /// </summary>
+    // Supplying a constant would send a value the spec never declared.
     [Fact]
     public void FailsOnArgumentTheSpecDoesNotExplain()
     {
@@ -123,11 +111,8 @@ public class SynthesisTests
             ContractEngine.BuildArgs(Method(nameof(UnexplainedSignature)), spec, operation, 0));
     }
 
-    /// <summary>
-    /// Every member of a composite request body is sent, for anyOf as well as
-    /// oneOf. A body whose members are only reachable through anyOf would
-    /// otherwise be synthesized as an empty object.
-    /// </summary>
+    // A body whose members are only reachable through anyOf would otherwise be
+    // synthesized as an empty object.
     [Theory]
     [InlineData("oneOf")]
     [InlineData("anyOf")]
@@ -142,12 +127,8 @@ public class SynthesisTests
         Assert.Equal("usage", body["type"]);
     }
 
-    /// <summary>
-    /// Two body variants never share a case id. The cases are keyed by id, so a
-    /// shared id drops one variant, and the label alone does not distinguish
-    /// them: inline oneOf/anyOf members have no <c>$ref</c> to be named after
-    /// and all fall back to the same label.
-    /// </summary>
+    // Cases are keyed by id, so a shared id drops one variant. The label alone
+    // does not distinguish them: inline members have no $ref to be named after.
     [Fact]
     public void GivesEveryBodyVariantItsOwnCaseId()
     {
@@ -161,7 +142,6 @@ public class SynthesisTests
         Assert.Equal(2, ids.Distinct(StringComparer.Ordinal).Count());
     }
 
-    /// <summary>Writes a spec document and loads it through the suite's own entry point.</summary>
     private static (SpecDocument Spec, SpecOperation Operation) Load(string document, string operationId)
     {
         var directory = Directory.CreateTempSubdirectory("contract-spec");

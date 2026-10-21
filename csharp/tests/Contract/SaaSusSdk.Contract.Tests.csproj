@@ -1,12 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <!--
-    SDK contract test. Kept in its own project so that `dotnet test` on it runs
-    only the round trip against the Prism mock: the suite in
-    ../SaaSusSdk.Tests.csproj needs live credentials and committed snapshots.
-
-    The project path and the test class names are the stable entry point: the
-    workflow runs this same path on a previously released tag, whose own
-    bundled copy is the (C) forward-compatibility check.
+    Separate from ../SaaSusSdk.Tests.csproj, which needs live credentials and
+    committed snapshots. This project path and the test class names are the
+    stable entry point: the workflow runs this same path on a previously
+    released tag, whose own bundled copy is the (C) check.
   -->
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -25,7 +22,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <!-- The OpenAPI specs are YAML; the request inputs are read from them. -->
+    <!-- The specs are YAML; the request inputs are read from them. -->
     <PackageReference Include="YamlDotNet" Version="16.3.0" />
   </ItemGroup>
 

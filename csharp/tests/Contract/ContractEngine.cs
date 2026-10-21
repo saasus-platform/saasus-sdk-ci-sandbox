@@ -4,34 +4,23 @@ using Newtonsoft.Json;
 
 namespace SaasusSdk.Contract;
 
-/// <summary>
-/// Reflective contract engine behind the xunit suite (<see cref="ContractTest"/>).
-/// </summary>
-/// <remarks>
-/// <para><b>Enumeration</b> — operations are discovered at run time by matching
-/// each spec operationId against the generated <c>&lt;module&gt;api.Api.*Api</c>
-/// classes. Nothing is hardcoded, so an operation an SDK lacks is simply not
-/// enumerated — which is what lets the same suite run a previously released SDK
-/// (forward compatibility).</para>
-/// <para><b>Call forms</b> — <c>WithHttpInfo</c> (sync) and
-/// <c>WithHttpInfoAsync</c>. The plain <c>Op</c> / <c>OpAsync</c> forms only
-/// call them and return <c>.Data</c>, so they add no logic and observe less:
-/// RestSharp reports a response that fails to deserialize as <c>ErrorText</c>
-/// with a null <c>Data</c> rather than an exception, and only the
-/// <c>WithHttpInfo</c> result (<see cref="ApiResponseView"/>) exposes that and
-/// the HTTP status.</para>
-/// <para><b>Inputs</b> — parameters and request bodies come from
-/// <see cref="SpecDocument"/>.</para>
-/// <para>Synthetic data only: synthetic credentials, request values from the
-/// spec, and no response body, credential or PII reported.</para>
-/// </remarks>
+// Reflective engine behind ContractTest.
+//
+// Only WithHttpInfo / WithHttpInfoAsync are exercised: Op / OpAsync just call
+// them and return .Data, and RestSharp reports a response that fails to
+// deserialize as ErrorText with a null Data rather than as an exception, which
+// only the WithHttpInfo result exposes.
 internal static class ContractEngine
 {
-    /// <summary>All SDK modules. A module is tested only if it is generated AND has a Prism endpoint.</summary>
+    // Declared once, in the shared fetch-openapi-spec action, and passed from
+    // there to both the Prism setup and here, so the specs fetched and the
+    // modules enumerated cannot drift apart. No default: it would be a second
+    // copy of the list, and would let the suite test fewer modules than were
+    // fetched. Empty is reported by ContractTest.ModuleListIsProvided.
     internal static readonly string[] Modules =
-        { "auth", "pricing", "billing", "awsmarketplace", "integration", "apilog", "communication" };
+        (Environment.GetEnvironmentVariable("CONTRACT_MODULES") ?? string.Empty)
+            .Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries);
 
-    /// <summary>The single assembly all generated modules are compiled into.</summary>
     private static readonly Assembly SdkAssembly = typeof(authapi.Client.Configuration).Assembly;
 
     private static readonly Lazy<IReadOnlyDictionary<string, ContractCase>> LazyCases =
@@ -39,26 +28,18 @@ internal static class ContractEngine
 
     static ContractEngine()
     {
-        // The generated ApiClient signs every request with SaaSus SigV1 from
-        // these variables and throws when any is unset
-        // (generated/<module>api/Expansion/ExpansionApiClient.cs), so the mock
-        // is unreachable without them; it does not validate the signature.
-        // Overwritten rather than defaulted so that a developer's real
-        // credentials are never signed into a request sent to the mock.
-        // Verifying the authentication layer itself is out of scope here.
+        // ExpansionApiClient signs every request with SaaSus SigV1 from these
+        // variables and throws when any is unset, so the mock is unreachable
+        // without them; it does not validate the signature. Overwritten rather
+        // than defaulted so a developer's real credentials are never signed
+        // into a request sent to the mock.
         Environment.SetEnvironmentVariable("SAASUS_SECRET_KEY", "synthetic-secret-key");
         Environment.SetEnvironmentVariable("SAASUS_API_KEY", "synthetic-api-key");
         Environment.SetEnvironmentVariable("SAASUS_SAAS_ID", "synthetic-saas-id");
     }
 
-    /// <summary>Every case, keyed by its reported id.</summary>
     internal static IReadOnlyDictionary<string, ContractCase> Cases => LazyCases.Value;
 
-    /// <summary>
-    /// Spec operations of a configured module with no generated SDK method.
-    /// Asserted only for the latest SDK: an older one legitimately lacks newer
-    /// operations.
-    /// </summary>
     internal static IEnumerable<string> UnmappedOperations(string module)
     {
         var spec = SpecDocument.LoadOrNull(SpecDir, module);
@@ -75,20 +56,25 @@ internal static class ContractEngine
         }
     }
 
-    /// <summary>
-    /// Modules whose Prism mock is configured but whose spec is absent from
-    /// <c>CONTRACT_SPEC_DIR</c>.
-    /// </summary>
-    /// <remarks>
-    /// Such a module contributes no case, so without this check the run would
-    /// pass with none of its operations verified. No other spec is substituted:
-    /// a mock must be exercised with the document it was started from, or a
-    /// request the mock rejects and one the spec never declared become
-    /// indistinguishable.
-    /// </remarks>
+    // No other spec is substituted for a missing one: a mock must be exercised
+    // with the document it was started from, or a request the mock rejects and
+    // one the spec never declared become indistinguishable.
     internal static IEnumerable<string> ModulesMissingSpec() =>
         Modules.Where(module => PrismEndpoints.UrlForOrNull(module) != null
             && SpecDocument.LoadOrNull(SpecDir, module) == null);
+
+    // Read from the compiled code so that comparing it against Modules does not
+    // require a second copy of the list.
+    internal static IEnumerable<string> GeneratedModules()
+    {
+        const string suffix = "api.Api";
+        return SdkAssembly.GetTypes()
+            .Select(type => type.Namespace)
+            .Where(ns => ns != null && ns.EndsWith(suffix, StringComparison.Ordinal))
+            .Select(ns => ns!.Substring(0, ns!.Length - suffix.Length))
+            .Distinct(StringComparer.Ordinal)
+            .OrderBy(module => module, StringComparer.Ordinal);
+    }
 
     private static string? SpecDir => Environment.GetEnvironmentVariable("CONTRACT_SPEC_DIR");
 
@@ -110,7 +96,6 @@ internal static class ContractEngine
                 {
                     continue;
                 }
-                // A oneOf/anyOf body yields one case per variant, otherwise one case.
                 var labels = spec.BodyVariantLabels(operation);
                 for (var index = 0; index < Math.Max(labels.Count, 1); index++)
                 {
@@ -118,10 +103,6 @@ internal static class ContractEngine
                     foreach (var form in new[] { CallForm.Sync, CallForm.Async })
                     {
                         var contractCase = new ContractCase(module, apiType, spec, operation, index, label, form, baseUrl);
-                        // Cases are keyed by id, so a collision would silently
-                        // drop one. The variant index in the id makes that
-                        // unreachable; if it happens anyway, fail loudly
-                        // rather than leave a case unverified.
                         if (!cases.TryAdd(contractCase.Id, contractCase))
                         {
                             throw new ContractFailure($"duplicate contract case id: {contractCase.Id}");
@@ -133,13 +114,10 @@ internal static class ContractEngine
         return cases;
     }
 
-    /// <summary>
-    /// The generated API class holding the operation, or <c>null</c> when this
-    /// SDK has none. Matching on the method name rather than the spec's tag
-    /// keeps enumeration independent of the generator's tag-to-class naming;
-    /// the <c>WithHttpInfo</c> suffix makes the match unambiguous (no accessor
-    /// of the API class is named that way).
-    /// </summary>
+    // Null when this SDK lacks the operation, which is what lets a previously
+    // released SDK run the same suite. Matched on the method name rather than
+    // the spec's tag to stay independent of the generator's tag-to-class
+    // naming; the WithHttpInfo suffix makes that unambiguous.
     private static Type? FindApiType(string module, string operationId)
     {
         foreach (var type in ApiTypes(module))
@@ -167,11 +145,8 @@ internal static class ContractEngine
         apiType.GetMethods(BindingFlags.Public | BindingFlags.Instance)
             .FirstOrDefault(m => m.Name == name && !m.IsSpecialName);
 
-    /// <summary>
-    /// A generated API client pointed at the mock. The hand-written client
-    /// configuration wrappers (<c>generated/modules</c>) are deliberately
-    /// bypassed: this suite verifies the generated client against the spec.
-    /// </summary>
+    // The hand-written configuration wrappers (generated/modules) are bypassed:
+    // what this suite verifies against the spec is the generated client.
     internal static object CreateApi(string module, Type apiType, string baseUrl)
     {
         var configurationType = SdkAssembly.GetType(module + "api.Client.Configuration")
@@ -181,22 +156,14 @@ internal static class ContractEngine
         return Activator.CreateInstance(apiType, configuration)!;
     }
 
-    /// <summary>
-    /// Fills the generated argument list, binding each argument to the spec
-    /// parameter of the same name.
-    /// </summary>
-    /// <remarks>
-    /// By name, not by position: an SDK generated from another spec revision
-    /// (the forward-compatibility case, where a parameter was inserted in the
-    /// middle) still gets each value in the right argument. A spec parameter
-    /// the method does not declare is simply not supplied — the same change
-    /// seen from the other side.
-    /// <para>The request body is the only argument with no spec parameter, so
-    /// exactly one argument is unbound when the operation has a body and none
-    /// otherwise. Any other unbound argument cannot be explained from the spec,
-    /// and a constant would send a value the spec never declared, so binding
-    /// fails instead.</para>
-    /// </remarks>
+    // Bound by name, not by position, so an SDK generated from another spec
+    // revision (a parameter inserted in the middle) still gets each value in
+    // the right argument.
+    //
+    // The request body is the only argument with no spec parameter, hence the
+    // unbound count. Any other unbound argument cannot be explained from the
+    // spec, and a constant would send a value the spec never declared, so
+    // binding fails instead.
     internal static object?[] BuildArgs(MethodInfo method, SpecDocument spec, SpecOperation operation, int variantIndex)
     {
         var parameters = method.GetParameters();
@@ -232,40 +199,26 @@ internal static class ContractEngine
             }
             else
             {
-                // operationIndex / cancellationToken: the generator's own
-                // arguments, left at their declared defaults.
                 args[i] = parameter.HasDefaultValue ? parameter.DefaultValue : Default(parameter.ParameterType);
             }
         }
         return args;
     }
 
-    /// <summary>
-    /// True for the arguments the generator adds to every operation, which no
-    /// spec parameter corresponds to.
-    /// </summary>
     private static bool IsGeneratorArgument(ParameterInfo parameter) =>
         parameter.ParameterType == typeof(CancellationToken)
         || (parameter.Name == "operationIndex" && parameter.ParameterType == typeof(int));
 
-    /// <summary>
-    /// Compares a spec parameter name with a generated argument name, ignoring
-    /// the separators and the casing the generator changes
-    /// (<c>created_date</c> -&gt; <c>createdDate</c>,
-    /// <c>X-Saasus-Referer</c> -&gt; <c>xSaasusReferer</c>).
-    /// </summary>
+    // created_date -> createdDate, X-Saasus-Referer -> xSaasusReferer.
     private static bool Matches(string specName, string? argumentName) =>
         argumentName != null && Flatten(specName) == Flatten(argumentName);
 
     private static string Flatten(string name) =>
         new string(name.Where(char.IsLetterOrDigit).ToArray()).ToLowerInvariant();
 
-    /// <summary>
-    /// Converts a spec-derived value into the generated argument type through
-    /// JSON, the same conversion the SDK applies to a request body. The
-    /// generated models tag each property with its spec name, so an object keyed
-    /// by spec names binds by name, not position.
-    /// </summary>
+    // Through JSON, the same conversion the SDK applies to a request body: the
+    // generated models tag each property with its spec name, so a value keyed
+    // by spec names binds by name rather than by position.
     private static object? Coerce(object? value, Type target)
     {
         if (value == null)
@@ -278,25 +231,18 @@ internal static class ContractEngine
     private static object? Default(Type target) =>
         target.IsValueType ? Activator.CreateInstance(target) : null;
 
-    /// <summary>
-    /// The HTTP status carried by a generated <c>ApiException</c>, or 0 when the
-    /// error is not one.
-    /// </summary>
+    // 0 when the error is not a generated ApiException.
     internal static int HttpStatusOf(Exception error) =>
         error.GetType().GetProperty("ErrorCode")?.GetValue(error) as int? ?? 0;
 }
 
-/// <summary>The call forms exercised per operation.</summary>
 internal enum CallForm
 {
     Sync,
     Async
 }
 
-/// <summary>
-/// A contract failure. Carries only what this harness composed itself, never a
-/// response body.
-/// </summary>
+// Carries only what this harness composed itself, never a response body.
 internal sealed class ContractFailure : Xunit.Sdk.XunitException
 {
     internal ContractFailure(string message) : base(message)
@@ -304,7 +250,6 @@ internal sealed class ContractFailure : Xunit.Sdk.XunitException
     }
 }
 
-/// <summary>One contract case: an operation exercised through one call form.</summary>
 internal sealed class ContractCase
 {
     private readonly string _module;
@@ -324,24 +269,19 @@ internal sealed class ContractCase
         _variantIndex = variantIndex;
         _baseUrl = baseUrl;
         Form = form;
-        // The id carries the variant index, not just the label: two oneOf/anyOf
-        // members can share a label (inline members have no $ref to name them),
-        // and cases are keyed by id, so a shared id would leave one variant
-        // unsent.
+        // The variant index is in the id because two oneOf/anyOf members can
+        // share a label (inline members have no $ref to name them) and cases
+        // are keyed by id, so a shared id would leave one variant unsent.
         Id = $"{module}.{apiType.Name}.{operation.OperationId}"
             + (variantLabel == null ? string.Empty : $"(#{variantIndex} {variantLabel})")
             + $" [{form}]";
     }
 
-    /// <summary>Stable, human-readable id, e.g. <c>pricing.PricingUnitsApi.CreatePricingUnit(#0 fixed) [Sync]</c>.</summary>
+    // e.g. pricing.PricingUnitsApi.CreatePricingUnit(#0 fixed) [Sync]
     internal string Id { get; }
 
     internal CallForm Form { get; }
 
-    /// <summary>
-    /// Invokes the call form against the mock and asserts the round trip: the
-    /// request is accepted and the response deserializes into the SDK types.
-    /// </summary>
     internal async Task InvokeAsync()
     {
         try
@@ -367,16 +307,16 @@ internal sealed class ContractCase
         }
         catch (Exception exception)
         {
-            // Unwrap so the declared-error check sees the real ApiException.
+            // Unwrapped so the declared-status check below sees the real
+            // ApiException.
             var error = exception is TargetInvocationException { InnerException: { } inner } ? inner : exception;
-            // For an operation declaring no 2xx response (e.g.
-            // ReturnInternalServerError), surfacing the declared error IS the
-            // check, so a spec-declared status passes. Everything else fails: a
-            // 4xx means the mock rejected a request built from the same spec it
-            // validates against, so the SDK or the spec is wrong; a 5xx means
-            // Prism (static mode) could not produce the declared response, a
-            // spec defect. Skipping either would leave that operation's
-            // response deserialization unverified.
+            // For an operation declaring no 2xx (ReturnInternalServerError),
+            // surfacing the declared error IS the check. Everything else fails:
+            // a 4xx means the mock rejected a request built from the same spec
+            // it validates against, so the SDK or the spec is wrong; a 5xx means
+            // Prism could not produce the declared response, a spec defect.
+            // Skipping either would leave that operation's response
+            // deserialization unverified.
             var status = ContractEngine.HttpStatusOf(error);
             if (_operation.HasSuccess || status == 0 || !_operation.DeclaredStatuses.Contains(status))
             {
@@ -389,42 +329,32 @@ internal sealed class ContractCase
     {
         if (response.Status is < 200 or >= 300)
         {
-            // The generated exception factory normally raises these; reaching
-            // here means it was disabled or the status is a 1xx/3xx.
+            // Reached only if the generated exception factory was disabled or
+            // the status is 1xx/3xx.
             if (_operation.HasSuccess || !_operation.DeclaredStatuses.Contains(response.Status))
             {
                 throw new ContractFailure($"{Id} failed: unexpected HTTP {response.Status}");
             }
             return;
         }
-        // RestSharp reports a response that could not be deserialized as an
-        // error on the response rather than as an exception. The text is not
-        // quoted: the generated codec puts the response body into it.
+        // RestSharp puts a response it could not deserialize here instead of
+        // throwing. Not quoted: the generated codec copies the body into it.
         if (!string.IsNullOrEmpty(response.ErrorText))
         {
             throw new ContractFailure($"{Id} failed: HTTP {response.Status} response could not be deserialized"
                 + " — response bodies are deliberately not reported; re-run locally for the detail");
         }
-        // An operation that declares a response body must deliver one; the
-        // generator types a body-less operation as ApiResponse<Object>.
+        // A body-less operation is typed ApiResponse<Object>, so a null payload
+        // is only a failure for the rest.
         if (response.PayloadType != typeof(object) && response.Data == null)
         {
             throw new ContractFailure($"{Id} failed: HTTP {response.Status} response deserialized to null");
         }
     }
 
-    /// <summary>
-    /// The reported failure, built from the operation, the call form, the
-    /// exception type and the HTTP status only.
-    /// </summary>
-    /// <remarks>
-    /// Generated models put the response body in their deserialization message
-    /// (<c>PricingUnit</c>: "The JSON string `...` cannot be deserialized"),
-    /// and the runner prints that message and the whole inner-exception chain
-    /// into the uploaded report. The original exception is therefore neither
-    /// chained nor quoted, keeping bodies out of the logs and artifacts as the
-    /// issue requires; diagnosis needs a local re-run.
-    /// </remarks>
+    // The original exception is neither chained nor quoted: generated models put
+    // the response body in their deserialization message, and the runner prints
+    // that whole chain into the uploaded report. Diagnosis needs a local re-run.
     private ContractFailure Failure(Exception error)
     {
         var status = ContractEngine.HttpStatusOf(error);
@@ -434,10 +364,7 @@ internal sealed class ContractCase
     }
 }
 
-/// <summary>
-/// Reads the generated <c>ApiResponse&lt;T&gt;</c>, whose <c>T</c> differs per
-/// operation.
-/// </summary>
+// Reads the generated ApiResponse<T>, whose T differs per operation.
 internal sealed class ApiResponseView
 {
     internal ApiResponseView(object response)
