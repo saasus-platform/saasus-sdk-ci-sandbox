@@ -1,213 +1,73 @@
----
+# saasus-sdk-ci-sandbox
 
-# SDK 使用手順
+SDK 契約テストの検証用サンドボックス。**配布物ではない。** 各言語の SDK
+リポジトリに契約テストを入れる前に、ここで (A)(B)(C) が緑になることを確かめる。
 
-このガイドでは、`saasus-sdk-csharp` を **.NET 8** および **.NET Framework 4.8** アプリケーションに導入する手順を説明します。
+検証する3点は言語共通。
 
----
+| | 内容 |
+|---|---|
+| (A) | 候補SDKがビルドできる |
+| (B) | 候補SDKのリクエストが最新specのモックに受理され、レスポンスがデシリアライズできる |
+| (C) | 直近リリースが最新specに対してなお往復できる（タグ同梱のスイートで検証） |
 
-## .NET 8 アプリケーションで SDK を使用する手順
+## 構成
 
-### 1. SDK をプロジェクトに追加し、ビルド＆実行する
-
-#### **Visual Studio を使用する場合**
-
-1. **ソリューションに SDK を追加**
-
-   - **Visual Studio** で **ソリューション (.sln)** を開く
-   - **ソリューションエクスプローラー** でアプリケーションプロジェクトを右クリックし、**[参照の追加]** を選択
-   - **[プロジェクト]** タブから `saasus-sdk-csharp` を選択し、**[OK]** をクリック
-
-2. **ビルド**
-
-   - **メニューから [ビルド] → [ソリューションのビルド] を選択**
-   - ビルドが完了し、エラーがないことを確認
-
-3. **実行**
-
-   - **F5 キー** または **[デバッグ] → [デバッグの開始]** でアプリケーションを実行
-   - **Ctrl + F5** または **[デバッグなしで開始]** でデバッグなし実行
-
----
-
-#### **コマンドラインを使用する場合**
-
-1. **アプリケーションプロジェクトのディレクトリに移動**（`MyApp` がアプリケーションプロジェクトのフォルダと仮定）
-
-   ```bash
-   cd path/to/MyApp
-   ```
-
-2. **SDK をプロジェクト参照 & ソリューションに追加**
-
-   - **アプリケーションプロジェクトの ********`.csproj`******** があるディレクトリで実行**
-
-   ```bash
-   dotnet add reference ../saasus-sdk-csharp/saasus-sdk-csharp.csproj
-   ```
-
-   - **ソリューションの ********`.sln`******** があるディレクトリで実行**
-
-   ```bash
-   dotnet sln add ../saasus-sdk-csharp/saasus-sdk-csharp.csproj
-   ```
-
-   **注意:**
-   上記の `../saasus-sdk-csharp/saasus-sdk-csharp.csproj` は、SDK の `csproj` への相対パスです。  
-   **ユーザーのプロジェクト構成によって適宜パスを変更してください。**
-
-3. **ビルド & 実行（アプリケーションプロジェクトのディレクトリまたはソリューションのディレクトリで実行）**
-
-   ```bash
-   dotnet build
-   dotnet run
-   ```
-
----
-
-### 3. 動作確認
-
-アプリケーションコード内で `saasus-sdk-csharp` を参照し、期待する機能が正しく動作するか確認してください。
-
----
-
-### **JSONライブラリについての注意点**
-
-SDKではデフォルトで**Newtonsoft.Json**ライブラリを使用しています。そのため、アプリケーションのJSONライブラリが`System.Text.Json`など他のライブラリに設定されている場合、以下の点に注意が必要です。
-
-#### **Newtonsoft.Jsonを使用する場合**
-モデルをそのままレスポンスとして返却できます。
-
-```csharp
-var userInfo = await userInfoApi.GetUserInfoAsync(token);
-
-// モデルをそのままレスポンスに返却
-return Ok(userInfo);
+```
+.
+├── .github/workflows/
+│   └── csharp-contract-test.yml    # 言語ごとに1ファイル
+└── csharp/                          # saasus-sdk-csharp のルートと1:1
+    ├── saasus-sdk-csharp.csproj
+    ├── generated/                   # api の spec から generate.sh で生成
+    ├── tests/Contract/              # 契約テスト本体
+    └── ...
 ```
 
-#### **異なるJSONライブラリを使用する場合**
-シリアライズ処理を明示的に行う必要があります。
+言語非依存の処理（spec 取得・Prism 起動・タグ解決）は
+[saasus-platform/github-actions](https://github.com/saasus-platform/github-actions)
+のコンポジットアクションにあり、ここには置かない。
 
-```csharp
-var userInfo = await userInfoApi.GetUserInfoAsync(token);
+### 各言語ツリーは対応するSDKリポジトリのミラー
 
-// JSON形式でレスポンスを返す（SDKのToJsonメソッドを利用）
-var jsonResponse = userInfo.ToJson();
-return Results.Text(jsonResponse, "application/json");
+`csharp/` の中身は `saasus-platform/saasus-sdk-csharp` のリポジトリ直下と同じ
+レイアウトにしてある。ワークフローとテストを本番へ移植するときの差分を
+`working-directory` と `paths` だけに閉じ込めるため。崩さないこと。
 
-// Newtonsoft.Jsonを使用して明示的にシリアライズ
-var jsonResponse = JsonConvert.SerializeObject(users.VarUsers);
-return Results.Text(jsonResponse, "application/json");
-```
+### 言語を追加する
 
-JSONライブラリの設定に応じて、必要なシリアライズ処理を追加してください。
+1. `<lang>/` に対象SDKリポジトリのルートをそのまま置く
+2. `.github/workflows/<lang>-contract-test.yml` を追加する
+   - `paths` を `<lang>/**` と当該ワークフローに絞る
+   - `concurrency.group` に言語名を入れる
+   - ジョブの `name` を `<lang>-contract-test` にする（必須チェック名の衝突を避ける）
+   - ビルド/テストのステップに `working-directory: <lang>` を付ける
+   - (C) は `working-directory: latest-release/<lang>`
+3. main にマージしてからタグを打ち直す（下記）
 
----
+## タグ運用
 
-## .NET Framework 4.8（packages.config）アプリケーションで SDK を使用する手順
+(C) は「直近リリースのタグをチェックアウトし、そのタグが同梱するスイートを
+最新specに対して走らせる」。タグは git のリポジトリ単位なので、ここでは
+**言語横断の単一 `vX.Y.Z` 系列**を使う。タグのツリーには全言語が入っており、
+各言語のスイートはその中の自分のサブディレクトリにある。言語ごとの
+リリース番号はサンドボックスでは意味を持たないため分けていない
+（分けるなら共有アクション `resolve-latest-stable-tag` に prefix 入力の
+追加が必要になる）。
 
-### **1. SDK プロジェクトのビルド**
+スイートを変更して main に入れたら、main にタグを打つ。そのタグが次の PR の
+(C) の対象になる。タグが無い、またはタグのツリーにスイートが無い状態では
+(C) は設計通り失敗する（スキップ機構は無い）。
 
-1. SDK のソースコードがあるディレクトリに移動します：
-   ```bash
-   cd <SDKのソースコードディレクトリ>
-   ```
+## 本番SDKリポジトリへの移植
 
-2. 以下のコマンドを実行してプロジェクトをビルドします：
-   ```bash
-   dotnet build -c Release
-   ```
+`csharp/` の例。
 
-3. ビルドが成功したことを確認してください。
+1. `csharp/` の中身をSDKリポジトリ直下へ
+2. ワークフローから `working-directory` と `on.pull_request.paths` を落とす
+3. (C) の `working-directory` を `latest-release` に戻す
+4. ジョブ `name` を `contract-test` に戻す
+5. `Fetch OpenAPI spec` の `ref` を落とす（本番は最新安定タグを自動解決する）
 
----
-
-### **2. NuGet パッケージの生成**
-
-1. 以下のコマンドを実行して NuGet パッケージを生成します：
-   ```bash
-   dotnet pack -c Release
-   ```
-
-2. コマンドを実行すると、`bin/Release` フォルダに `.nupkg` ファイルが生成されます。
-   例:
-   ```
-   bin/Release/saasus-sdk-csharp.1.0.0.nupkg
-   ```
-
----
-
-### **3. ローカルフィードの設定**
-
-#### **3.1 ローカルフィード用ディレクトリを作成**
-ローカルフィードとして利用するディレクトリを作成します：
-```bash
-mkdir C:\LocalNuGetFeed
-```
-
-#### **3.2 パッケージをコピー**
-生成した `.nupkg` ファイルをローカルフィードディレクトリにコピーします：
-```bash
-cp bin/Release/saasus-sdk-csharp.1.0.0.nupkg C:\LocalNuGetFeed
-```
-
-#### **3.3 Visual Studio でローカルフィードを設定**
-1. **Visual Studio** を開きます。
-2. メニューから **[ツール]** → **[オプション]** を選択します。
-3. **[NuGet パッケージ マネージャー]** → **[パッケージ ソース]** を選択します。
-4. **[追加]** ボタンをクリックし、以下を設定します：
-    - **名前**: LocalFeed（任意の名前）
-    - **ソース**: `C:\LocalNuGetFeed`
-5. **[OK]** をクリックして保存します。
-
----
-
-### **4. アプリケーションに SDK をインストール**
-
-1. **対象プロジェクトを開く**
-   - Visual Studio で `.NET Framework` プロジェクト（例: `MyApp.sln`）を開きます。
-
-2. **NuGet パッケージをインストール**
-   1. ソリューションエクスプローラーでプロジェクトを右クリックし、**[NuGet パッケージの管理]** を選択します。
-   2. 「パッケージソース」から、追加した `LocalFeed` を選択します。
-   3. 一覧に表示された `saasus-sdk-csharp` を選択し、**[インストール]** をクリックします。
-
----
-
-## 環境変数の設定
-
-SDKを正しく動作させるには、以下の環境変数の設定が必要です。
-
-| 環境変数名          | 説明                          |
-|-----------------------|-------------------------------|
-| `SAASUS_SAAS_ID`      | SaaSの識別子（SaaS ID）       |
-| `SAASUS_API_KEY`      | APIアクセス用のAPIキー       |
-| `SAASUS_SECRET_KEY`   | クライアントシークレットキー |
-
-環境変数の設定方法は、実行環境やアプリケーションの要件に応じて適切に行ってください。
-例えば、`appsettings.json`に定義した値を読み込んで環境変数に設定することもできます。
-
----
-
-
----
-
-## macOSでDocker Composeを使用する
-
-Docker Desktopを起動し、このリポジトリのルートで以下を実行してください。公式の.NET 8 SDKイメージはApple Silicon（arm64）とIntel Mac（amd64）の両方に対応しています。
-
-```bash
-# イメージを作成する
-docker compose build
-
-# SDKを復元・ビルドする（既定コマンド）
-docker compose run --rm csharp
-
-# .NET SDKの情報を確認する
-docker compose run --rm csharp dotnet --info
-
-# コンテナ内のシェルを開く
-docker compose run --rm csharp bash
-```
-
-ソースコードはコンテナの`/workspace`へマウントされるため、macOS側で行った変更がすぐ反映されます。NuGetパッケージは名前付きボリュームにキャッシュされます。このプロジェクト自体は実行可能アプリではなくSDKライブラリなので、既定コマンドは`dotnet run`ではなく`dotnet build`です。
+各ワークフローの先頭にサンドボックス固有の差分を列挙してあるので、そこを
+参照すること。

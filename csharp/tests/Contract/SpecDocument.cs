@@ -2,15 +2,10 @@ using YamlDotNet.Serialization;
 
 namespace SaasusSdk.Contract;
 
-/// <summary>
-/// A parsed OpenAPI document, the source of the request inputs.
-/// </summary>
-/// <remarks>
-/// Values come from the spec rather than being hardcoded, so they are
-/// acceptable by construction: the Prism mock validates requests against the
-/// same document. The synthesis rules are language independent (operationId to
-/// parameters/body), hence shared with the other SDKs' suites.
-/// </remarks>
+// Source of the request inputs. Values come from the spec rather than being
+// hardcoded, so they are acceptable by construction: the Prism mock validates
+// requests against the same document. The rules are language independent,
+// hence shared with the other SDKs' suites.
 internal sealed class SpecDocument
 {
     private const string SyntheticValue = "synthetic";
@@ -27,14 +22,9 @@ internal sealed class SpecDocument
         Index();
     }
 
-    /// <summary>All indexed operations, ordered by operationId.</summary>
     internal IEnumerable<SpecOperation> Operations =>
         _operations.Values.OrderBy(o => o.OperationId, StringComparer.Ordinal);
 
-    /// <summary>
-    /// Loads <c>&lt;module&gt;.yml</c> from the spec directory, or returns
-    /// <c>null</c> when the directory or the file is absent.
-    /// </summary>
     internal static SpecDocument? LoadOrNull(string? specDir, string module)
     {
         if (string.IsNullOrEmpty(specDir))
@@ -50,11 +40,8 @@ internal sealed class SpecDocument
         return Normalize(decoded) is Dictionary<string, object?> root ? new SpecDocument(root) : null;
     }
 
-    /// <summary>
-    /// Turns the YAML mappings into <c>Dictionary&lt;string, object?&gt;</c>.
-    /// Unquoted response codes (<c>200:</c>) would otherwise be keyed by a
-    /// non-string, leaving the document with two different map types.
-    /// </summary>
+    // Unquoted response codes (200:) would otherwise be keyed by a non-string,
+    // leaving the document with two different map types.
     private static object? Normalize(object? value)
     {
         switch (value)
@@ -102,11 +89,8 @@ internal sealed class SpecDocument
         }
     }
 
-    /// <summary>
-    /// Collects the path, query and header parameters. The generated method
-    /// takes all three as individual arguments, so they are not separated here;
-    /// each is bound to its argument by name.
-    /// </summary>
+    // Path, query and header are not separated: the generated method takes all
+    // three as individual arguments, bound by name.
     private void LoadParameters(SpecOperation operation, Dictionary<string, object?> pathItem,
         Dictionary<string, object?> rawOperation)
     {
@@ -216,11 +200,7 @@ internal sealed class SpecDocument
         return Synth(parameter.Node.GetValueOrDefault("schema") as Dictionary<string, object?>);
     }
 
-    /// <summary>
-    /// The labels of the request body's top-level oneOf/anyOf members, or an
-    /// empty list when the body is neither. Each member becomes its own case so
-    /// that every variant is actually sent.
-    /// </summary>
+    // Each member becomes its own case so that every variant is actually sent.
     internal IReadOnlyList<string> BodyVariantLabels(SpecOperation operation)
     {
         var members = Variants(operation.BodySchema);
@@ -232,10 +212,6 @@ internal sealed class SpecDocument
         return members.Select(member => DiscriminatorValue(discriminator, RefOf(member))).ToList();
     }
 
-    /// <summary>
-    /// Synthesizes the request body, selecting the given top-level oneOf/anyOf
-    /// member.
-    /// </summary>
     internal object? BodyValue(SpecOperation operation, int variantIndex)
     {
         var members = Variants(operation.BodySchema);
@@ -285,11 +261,9 @@ internal sealed class SpecDocument
         }
     }
 
-    /// <summary>
-    /// Fills every declared property, not just the required ones: an optional
-    /// property that is never sent leaves its own serialization, and the
-    /// required fields nested below it, unverified.
-    /// </summary>
+    // Every declared property, not just the required ones: an optional property
+    // that is never sent leaves its own serialization, and the required fields
+    // nested below it, unverified.
     private object SynthObject(Dictionary<string, object?> schema)
     {
         var result = new Dictionary<string, object?>(StringComparer.Ordinal);
@@ -303,10 +277,7 @@ internal sealed class SpecDocument
         return result;
     }
 
-    /// <summary>
-    /// Composes the member schemas' properties, which is what allOf is used for
-    /// in these specs.
-    /// </summary>
+    // Composing properties is what allOf is used for in these specs.
     private Dictionary<string, object?> MergeAllOf(IList<object?> members)
     {
         var properties = new Dictionary<string, object?>(StringComparer.Ordinal);
@@ -324,11 +295,6 @@ internal sealed class SpecDocument
         return new Dictionary<string, object?>(StringComparer.Ordinal) { ["properties"] = properties };
     }
 
-    /// <summary>
-    /// Synthesizes one oneOf/anyOf member and, when the parent declares a
-    /// discriminator, sets the discriminator property so that the value
-    /// resolves to that member.
-    /// </summary>
     private object? SynthVariant(Dictionary<string, object?> parent, object? member)
     {
         if (member is not Dictionary<string, object?> schema)
@@ -382,7 +348,6 @@ internal sealed class SpecDocument
 
     // --- small helpers ------------------------------------------------------
 
-    /// <summary>The schema's oneOf or anyOf members, or an empty list.</summary>
     private static IList<object?> Variants(Dictionary<string, object?>? schema)
     {
         if (schema == null)
@@ -400,10 +365,6 @@ internal sealed class SpecDocument
         return Array.Empty<object?>();
     }
 
-    /// <summary>
-    /// The discriminator value whose mapping points at the given member
-    /// reference, falling back to the referenced schema name.
-    /// </summary>
     private static string DiscriminatorValue(Dictionary<string, object?>? discriminator, string reference)
     {
         foreach (var (value, target) in Map(discriminator?.GetValueOrDefault("mapping")))
@@ -432,7 +393,6 @@ internal sealed class SpecDocument
         value != null && int.TryParse(System.Convert.ToString(value), out var parsed) ? parsed : 0;
 }
 
-/// <summary>One spec operation: its inputs and its declared responses.</summary>
 internal sealed class SpecOperation
 {
     internal SpecOperation(string operationId, string path)
@@ -445,7 +405,6 @@ internal sealed class SpecOperation
 
     internal string Path { get; }
 
-    /// <summary>Path, query and header parameters, in declaration order.</summary>
     internal List<SpecParam> Parameters { get; } = new();
 
     internal Dictionary<string, object?>? BodySchema { get; set; }
@@ -455,7 +414,6 @@ internal sealed class SpecOperation
     internal bool HasSuccess { get; set; }
 }
 
-/// <summary>A spec parameter: its spec name and its declaration.</summary>
 internal sealed class SpecParam
 {
     internal SpecParam(string name, Dictionary<string, object?> node)
