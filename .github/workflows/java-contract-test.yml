@@ -98,16 +98,17 @@ jobs:
           spec-dir: ${{ steps.spec.outputs.spec-dir }}
           modules: ${{ steps.spec.outputs.modules }}
 
-      # (B) 候補SDKの仕様準拠を安定した `mvn test` の入口から検証する。
+      # (B) 候補SDKの仕様準拠を契約スイート（saasus.sdk.contract.**）から検証する。
       # モックのURLは setup-prism が export した PRISM_URL_<MODULE>、リクエスト
-      # 入力は CONTRACT_SPEC_DIR の spec から来る。
+      # 入力は CONTRACT_SPEC_DIR の spec から来る。(C) と同じ入口に揃えており、
+      # ContractTest に加えハーネス自身の単体テスト ContractEngineAsyncTest も走る。
       - name: (B) Candidate SDK contract
         working-directory: java
         env:
           CONTRACT_SPEC_DIR: ${{ steps.spec.outputs.spec-dir }}
           # 候補SDKは spec の全 operation を網羅していなければならない。
           CONTRACT_REQUIRE_COMPLETE: "true"
-        run: mvn -B -ntp test
+        run: mvn -B -ntp test -Dtest=saasus.sdk.contract.**
 
       # モノレポなのでタグは言語横断の単一系列。タグのツリーには全言語が
       # 入っているため、言語ごとのスイートはその中の自分のサブディレクトリに
@@ -126,17 +127,18 @@ jobs:
       # 各リリースはそれが同梱していたテストで検証される。Prism と
       # CONTRACT_SPEC_DIR はどちらも最新spec を指したまま。
       #
-      # -Dtest でスイート名を明示するのは、素の `mvn test` が同梱スイートを
-      # 持たないタグでも成功してしまうため（生成モデルのテストだけで BUILD
-      # SUCCESS になる）。surefire は存在しないクラスで失敗する。クラス名は
-      # 世代をまたいで固定する必要がある。スキップ機構は設けない。
+      # -Dtest で契約スイートのパッケージ（saasus.sdk.contract.**）を明示するのは、
+      # 素の `mvn test` が同梱スイートを持たないタグでも成功してしまうため（生成
+      # モデルのテストだけで BUILD SUCCESS になる）。surefire は一致するテストが
+      # 無ければ失敗する。パッケージ名は世代をまたいで固定する必要がある。
+      # スキップ機構は設けない。
       - name: (C) Latest release forward-compat (bundled suite)
         working-directory: latest-release/java
         env:
           CONTRACT_SPEC_DIR: ${{ steps.spec.outputs.spec-dir }}
         run: |
           set -euo pipefail
-          mvn -B -ntp test -Dtest=saasus.sdk.contract.ContractTest
+          mvn -B -ntp test -Dtest=saasus.sdk.contract.**
 
       # 何が走ったかの証跡: 各ケースは surefire の表示名になっている。(B) が
       # 先に落ちてリリース側のレポートが無いこともあるため失敗時もアップロード
