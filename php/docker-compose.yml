@@ -1,0 +1,10 @@
+version: '3'
+services:
+  php:
+    build: ./docker
+    working_dir: /mnt
+    volumes:
+      - ./:/mnt
+    ports:
+      - 8080:80
+    tty: true
