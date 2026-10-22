@@ -81,3 +81,5 @@ Route::middleware(\AntiPatternInc\Saasus\Laravel\Middleware\Auth::class)->group(
 ## ユースケースサンプル
 
 準備中・・・
+
+<!-- contract test verification: trigger php workflow against v2.3.0 (A/B/C) -->
