@@ -25,6 +25,8 @@
 # 設定する。spec は bearer スキームを宣言しモックはその値を検証しないため、
 # 剥がす必要がない（Go/PHP/Python と同じ理屈）。
 
+# 検証用トリガー: タグ v2.5.0（javascript/ スイート同梱）発行後の定常状態で
+# (A)(B)(C) 全緑を実測するための no-op 変更。verify/javascript-abc 専用でマージしない。
 name: JavaScript SDK Contract Test
 
 on:
