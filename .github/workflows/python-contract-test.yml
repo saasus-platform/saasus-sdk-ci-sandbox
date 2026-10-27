@@ -1,0 +1,158 @@
+# Python の SDK 契約テスト。
+#
+#   (A) 候補SDKがビルドできる
+#   (B) そのリクエストが最新specのモックに受理され、レスポンスがデシリアライズできる
+#   (C) 直近リリースが最新specに対してなお往復できる
+#
+# 言語非依存の処理は saasus-platform/github-actions のコンポジットアクション。
+# Python 固有のビルド/テスト手順だけがここにある。
+#
+# pull_request のみ（pull_request_target は使わない）: fork PR に secrets は渡らない。
+#
+# --- 本番SDKリポジトリとの差分（サンドボックス固有） ---
+#
+# 1. python/ 配下で動く。本番 saasus-sdk-python ではSDKがリポジトリ直下に
+#    あるため、移植時は working-directory と paths を落とし、(C) の
+#    latest-release/python を latest-release に戻す。
+# 2. spec の ref を api のコミットに固定している（go/csharp/php と同じ
+#    781a7703）。理由は下の該当ステップに書いた。
+# 3. ジョブ名が contract-test ではなく python-contract-test。1リポジトリに
+#    複数言語のワークフローが同居するため、必須チェック名を言語ごとに
+#    一意にする必要がある。
+#
+# C# 版にある「モックの security 要件を剥がす」ステップは Python には無い。
+# Python の契約テストは素の生成 ApiClient を直接叩き、合成 Bearer を
+# access_token に設定する。spec は bearer スキームを宣言しモックはその値を
+# 検証しないため、剥がす必要がない（Go/PHP と同じ理屈）。
+
+name: Python SDK Contract Test
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+    # 他言語のツリーだけを触るPRでPythonのジョブを動かさない。
+    paths:
+      - "python/**"
+      - ".github/workflows/python-contract-test.yml"
+
+concurrency:
+  group: sdk-contract-python-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  # 必須ステータスチェック名。リネームしないこと。
+  contract-test:
+    name: python-contract-test
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout PR (candidate SDK)
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - name: Set up Python
+        uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b # v5.3.0
+        with:
+          python-version: "3.12"
+
+      - name: Set up Node (for Prism)
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: "20"
+
+      - name: Install Poetry
+        run: pipx install poetry
+
+      # Short-lived installation token (contents:read on the private api repo only).
+      - name: Mint api read token
+        id: api-token
+        uses: actions/create-github-app-token@d72941d797fd3113feb6b93fd0dec494b13a2547 # v1
+        with:
+          app-id: ${{ secrets.SPEC_READER_APP_ID }}
+          private-key: ${{ secrets.SPEC_READER_PRIVATE_KEY }}
+          owner: Anti-Pattern-Inc
+          repositories: saasus-api
+
+      # サンドボックス固有: ref を api のコミットに固定している。
+      #
+      # 本番は ref を省略してアクション側に最新安定タグを解決させる。ここで
+      # 固定するのは、(B) が検証するのは commit 済みの生成コードであり、その
+      # 生成元 spec と食い違うと (B) の赤がSDKの欠陥か spec の進行かを区別
+      # できなくなるため。python/saasus_sdk_python/src は下記コミットの spec
+      # から generate.sh で生成したもので、両者は一対（go/csharp/php と同じ
+      # 781a7703）。
+      #
+      # api が次の安定タグを切ったら、そのタグから再生成した生成コードを
+      # commit し、ここを ref 省略に戻す。
+      - name: Fetch OpenAPI spec
+        id: spec
+        uses: saasus-platform/github-actions/.github/actions/fetch-openapi-spec@main
+        with:
+          token: ${{ steps.api-token.outputs.token }}
+          ref: 781a7703ddb9340758131ba8b9780108472490c6
+
+      # Not regenerated: the committed code is the artifact that gets merged.
+      # Python is interpreted, so the equivalent of a compile step is to
+      # byte-compile every file (compileall) and import every generated module,
+      # which forces the cross-module references to resolve.
+      - name: (A) Build candidate SDK
+        working-directory: python
+        run: |
+          set -euo pipefail
+          poetry install --no-interaction
+          poetry run python -m compileall -q saasus_sdk_python
+          poetry run python -c "import importlib, os; src = os.path.join('saasus_sdk_python', 'src'); [(importlib.import_module('saasus_sdk_python.src.' + n), importlib.import_module('saasus_sdk_python.src.' + n + '.api')) for n in sorted(os.listdir(src)) if os.path.isfile(os.path.join(src, n, 'api_client.py'))]; print('import OK')"
+
+      # Static mode, so responses come from the spec's examples: that is what
+      # makes its oneOf responses resolvable. Dynamic mode would ignore them.
+      - name: Start Prism mocks
+        uses: saasus-platform/github-actions/.github/actions/setup-prism@main
+        with:
+          spec-dir: ${{ steps.spec.outputs.spec-dir }}
+          modules: ${{ steps.spec.outputs.modules }}
+
+      # The suite enumerates every operation from the spec and reads the
+      # per-module mock URLs from the PRISM_URL_<MODULE> variables exported
+      # above.
+      - name: (B) Candidate SDK contract
+        working-directory: python
+        env:
+          CONTRACT_SPEC_DIR: ${{ steps.spec.outputs.spec-dir }}
+          # The same output the Prism setup consumed, so the module list has no
+          # copy here: the modules mocked and the modules tested cannot drift.
+          CONTRACT_MODULES: ${{ steps.spec.outputs.modules }}
+          # The candidate SDK must cover every spec operation.
+          CONTRACT_REQUIRE_COMPLETE: "true"
+        run: poetry run pytest tests/contract -v --tb=line
+
+      # モノレポなのでタグは言語横断の単一系列。タグのツリーには全言語が
+      # 入っているため、言語ごとのスイートはその中の自分のサブディレクトリに
+      # ある。
+      - name: Resolve latest release tag
+        id: release-tag
+        uses: saasus-platform/github-actions/.github/actions/resolve-latest-stable-tag@main
+
+      - name: Checkout latest release
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ steps.release-tag.outputs.tag }}
+          path: latest-release
+
+      # 現行ハーネスのコピーではなくリリースタグ自身のスイートを走らせる。
+      # 各リリースはそれが同梱していたテストで検証される。Prism と
+      # CONTRACT_SPEC_DIR はどちらも最新spec を指したまま。
+      #
+      # スイートが存在する前に打たれたタグは当該ディレクトリを持たず、ここで
+      # 設計通り失敗する。スキップ機構は設けない。
+      - name: (C) Latest release forward-compat (bundled suite)
+        working-directory: latest-release/python
+        env:
+          CONTRACT_SPEC_DIR: ${{ steps.spec.outputs.spec-dir }}
+          CONTRACT_MODULES: ${{ steps.spec.outputs.modules }}
+        run: |
+          set -euo pipefail
+          poetry install --no-interaction
+          poetry run pytest tests/contract -v --tb=line

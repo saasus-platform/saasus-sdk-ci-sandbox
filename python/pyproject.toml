@@ -1,0 +1,47 @@
+[tool.poetry]
+name = "saasus_sdk_python"
+version = "1.0.0"
+description = "SaaSus Auth API Schema"
+authors = ["Anti-Pattern Inc. <saasus@anti-pattern.co.jp>"]
+license = "Apache-2.0"
+readme = "README.md"
+repository = "https://github.com/saasus-platform/saasus-sdk-python"
+keywords = ["OpenAPI", "OpenAPI-Generator", "SaaSus Auth API Schema"]
+include = ["saasus_sdk_python/py.typed"]
+
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12"
+]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+openapi-client = "^1.1.7"
+aenum = "^3.1.15"
+python-dotenv = "^1.0.0"
+
+[tool.poetry.group.dev.dependencies]
+starlette = "0.27.0"
+uvicorn = "^0.23.2"
+fastapi = "^0.101.0"
+flake8 = "^3.7.0"
+pydantic-core = "^2.4.0"
+bump-pydantic = "^0.8.0"
+
+[tool.poetry.group.test.dependencies]
+pytest = "^7.4.0"
+# Contract suite (tests/contract): parses the OpenAPI spec YAML.
+pyyaml = "^6.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pylint.'MESSAGES CONTROL']
+extension-pkg-whitelist = "pydantic"
