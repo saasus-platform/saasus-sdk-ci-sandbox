@@ -1,0 +1,99 @@
+[saasus-sdk](../README.md) / [Auth/api](../modules/Auth_api.md) / RespondToSignInChallengeResult
+
+# Interface: RespondToSignInChallengeResult
+
+[Auth/api](../modules/Auth_api.md).RespondToSignInChallengeResult
+
+Result returned after responding to a sign-in challenge
+
+**`Export`**
+
+RespondToSignInChallengeResult
+
+## Table of contents
+
+### Properties
+
+- [challenge\_name](Auth_api.RespondToSignInChallengeResult.md#challenge_name)
+- [challenge\_parameters](Auth_api.RespondToSignInChallengeResult.md#challenge_parameters)
+- [credentials](Auth_api.RespondToSignInChallengeResult.md#credentials)
+- [new\_device\_metadata](Auth_api.RespondToSignInChallengeResult.md#new_device_metadata)
+- [session](Auth_api.RespondToSignInChallengeResult.md#session)
+
+## Properties
+
+### challenge\_name
+
+• `Optional` **challenge\_name**: [`ChallengeName`](../enums/Auth_api.ChallengeName.md)
+
+**`Memberof`**
+
+RespondToSignInChallengeResult
+
+#### Defined in
+
+[src/generated/Auth/api.ts:1712](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/api.ts#L1712)
+
+___
+
+### challenge\_parameters
+
+• `Optional` **challenge\_parameters**: `Object`
+
+Parameters required for the next challenge.
+
+**`Memberof`**
+
+RespondToSignInChallengeResult
+
+#### Index signature
+
+▪ [key: `string`]: `string`
+
+#### Defined in
+
+[src/generated/Auth/api.ts:1718](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/api.ts#L1718)
+
+___
+
+### credentials
+
+• `Optional` **credentials**: [`Credentials`](Auth_api.Credentials.md)
+
+**`Memberof`**
+
+RespondToSignInChallengeResult
+
+#### Defined in
+
+[src/generated/Auth/api.ts:1706](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/api.ts#L1706)
+
+___
+
+### new\_device\_metadata
+
+• `Optional` **new\_device\_metadata**: [`NewDeviceMetadata`](Auth_api.NewDeviceMetadata.md)
+
+**`Memberof`**
+
+RespondToSignInChallengeResult
+
+#### Defined in
+
+[src/generated/Auth/api.ts:1730](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/api.ts#L1730)
+
+___
+
+### session
+
+• `Optional` **session**: `string`
+
+Session identifier for the challenge. This session should be passed to the next call to RespondToSignInChallenge if another challenge is required.
+
+**`Memberof`**
+
+RespondToSignInChallengeResult
+
+#### Defined in
+
+[src/generated/Auth/api.ts:1724](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/api.ts#L1724)

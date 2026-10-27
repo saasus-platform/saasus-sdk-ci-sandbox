@@ -1,0 +1,71 @@
+{
+  "name": "saasus-sdk",
+  "version": "1.13.2",
+  "description": "Javascript SDK for SaaSus Platform",
+  "main": "./dist/saasus-sdk.js",
+  "module": "./dist/saasus-sdk.js",
+  "types": "./dist/main.d.ts",
+  "source": "./src/main.ts",
+  "files": [
+    "README.md",
+    "dist"
+  ],
+  "scripts": {
+    "test": "jest",
+    "build": "rollup -c",
+    "clean": "rimraf dist",
+    "preinstall": "typesync || :",
+    "codegen:openapi": "openapi-generator-cli generate -g typescript-axios -i $npm_config_input_dir -o ./src/generated/${npm_config_module}"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/saasus-platform/saasus-sdk-javascript"
+  },
+  "author": "Anti-Pattern Inc.",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/saasus-platform/saasus-sdk-javascript/issues"
+  },
+  "homepage": "https://github.com/saasus-platform/saasus-sdk-javascript",
+  "devDependencies": {
+    "@openapitools/openapi-generator-cli": "^2.5.2",
+    "@rollup/plugin-commonjs": "^22.0.1",
+    "@rollup/plugin-json": "^5.0.2",
+    "@rollup/plugin-node-resolve": "^13.3.0",
+    "@rollup/plugin-typescript": "^8.3.3",
+    "@types/crypto-js": "^4.1.1",
+    "@types/express": "^4.17.14",
+    "@types/jest": "^29.2.3",
+    "@types/js-yaml": "4.0.9",
+    "@types/node": "^16.18.91",
+    "@types/rimraf": "^3.0.2",
+    "@types/rollup-plugin-peer-deps-external": "^2.2.1",
+    "express": "^4.18.2",
+    "jest": "^29.3.1",
+    "js-yaml": "4.1.0",
+    "node-mocks-http": "^1.12.1",
+    "rimraf": "^3.0.2",
+    "rollup": "^2.76.0",
+    "rollup-plugin-peer-deps-external": "^2.2.4",
+    "rollup-plugin-typescript2": "^0.32.1",
+    "ts-jest": "^29.0.3",
+    "ts-loader": "^9.2.6",
+    "ts-node": "^10.4.0",
+    "typedoc": "^0.25.12",
+    "typedoc-plugin-markdown": "^3.17.1",
+    "typescript": "^4.5.4",
+    "typesync": "^0.9.2",
+    "webpack": "^5.65.0",
+    "webpack-cli": "^4.9.1"
+  },
+  "dependencies": {
+    "axios": "^1.2.1",
+    "crypto-js": "^4.1.1",
+    "date-and-time": "^2.4.1"
+  },
+  "peerDependencies": {
+    "axios": "^1.2.1",
+    "crypto-js": "^4.1.1",
+    "date-and-time": "^2.4.1"
+  }
+}

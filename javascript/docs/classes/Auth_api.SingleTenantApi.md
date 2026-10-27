@@ -1,0 +1,198 @@
+[saasus-sdk](../README.md) / [Auth/api](../modules/Auth_api.md) / SingleTenantApi
+
+# Class: SingleTenantApi
+
+[Auth/api](../modules/Auth_api.md).SingleTenantApi
+
+SingleTenantApi - object-oriented interface
+
+**`Export`**
+
+SingleTenantApi
+
+## Hierarchy
+
+- [`BaseAPI`](Auth_base.BaseAPI.md)
+
+  ↳ **`SingleTenantApi`**
+
+## Table of contents
+
+### Constructors
+
+- [constructor](Auth_api.SingleTenantApi.md#constructor)
+
+### Properties
+
+- [axios](Auth_api.SingleTenantApi.md#axios)
+- [basePath](Auth_api.SingleTenantApi.md#basepath)
+- [configuration](Auth_api.SingleTenantApi.md#configuration)
+
+### Methods
+
+- [getCloudFormationLaunchStackLinkForSingleTenant](Auth_api.SingleTenantApi.md#getcloudformationlaunchstacklinkforsingletenant)
+- [getSingleTenantSettings](Auth_api.SingleTenantApi.md#getsingletenantsettings)
+- [updateSingleTenantSettings](Auth_api.SingleTenantApi.md#updatesingletenantsettings)
+
+## Constructors
+
+### constructor
+
+• **new SingleTenantApi**(`configuration?`, `basePath?`, `axios?`): [`SingleTenantApi`](Auth_api.SingleTenantApi.md)
+
+#### Parameters
+
+| Name | Type | Default value |
+| :------ | :------ | :------ |
+| `configuration?` | [`Configuration`](Auth_configuration.Configuration.md) | `undefined` |
+| `basePath` | `string` | `BASE_PATH` |
+| `axios` | `AxiosInstance` | `globalAxios` |
+
+#### Returns
+
+[`SingleTenantApi`](Auth_api.SingleTenantApi.md)
+
+#### Inherited from
+
+[BaseAPI](Auth_base.BaseAPI.md).[constructor](Auth_base.BaseAPI.md#constructor)
+
+#### Defined in
+
+[src/generated/Auth/base.ts:52](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/base.ts#L52)
+
+## Properties
+
+### axios
+
+• `Protected` **axios**: `AxiosInstance` = `globalAxios`
+
+#### Inherited from
+
+[BaseAPI](Auth_base.BaseAPI.md).[axios](Auth_base.BaseAPI.md#axios)
+
+#### Defined in
+
+[src/generated/Auth/base.ts:52](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/base.ts#L52)
+
+___
+
+### basePath
+
+• `Protected` **basePath**: `string` = `BASE_PATH`
+
+#### Inherited from
+
+[BaseAPI](Auth_base.BaseAPI.md).[basePath](Auth_base.BaseAPI.md#basepath)
+
+#### Defined in
+
+[src/generated/Auth/base.ts:52](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/base.ts#L52)
+
+___
+
+### configuration
+
+• `Protected` **configuration**: `undefined` \| [`Configuration`](Auth_configuration.Configuration.md)
+
+#### Inherited from
+
+[BaseAPI](Auth_base.BaseAPI.md).[configuration](Auth_base.BaseAPI.md#configuration)
+
+#### Defined in
+
+[src/generated/Auth/base.ts:50](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/base.ts#L50)
+
+## Methods
+
+### getCloudFormationLaunchStackLinkForSingleTenant
+
+▸ **getCloudFormationLaunchStackLinkForSingleTenant**(`options?`): `Promise`\<`AxiosResponse`\<[`CloudFormationLaunchStackLink`](../interfaces/Auth_api.CloudFormationLaunchStackLink.md), `any`, {}, `any`\>\>
+
+Get the CloudFormation stack activation link for SaaS Infrastructure Management.
+
+#### Parameters
+
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `options?` | `AxiosRequestConfig`\<`any`, `any`\> | Override http request option. |
+
+#### Returns
+
+`Promise`\<`AxiosResponse`\<[`CloudFormationLaunchStackLink`](../interfaces/Auth_api.CloudFormationLaunchStackLink.md), `any`, {}, `any`\>\>
+
+**`Summary`**
+
+Get CloudFormation Stack Launch Link For SaaS Infrastructure Management
+
+**`Throws`**
+
+**`Memberof`**
+
+SingleTenantApi
+
+#### Defined in
+
+[src/generated/Auth/api.ts:8361](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/api.ts#L8361)
+
+___
+
+### getSingleTenantSettings
+
+▸ **getSingleTenantSettings**(`options?`): `Promise`\<`AxiosResponse`\<[`SingleTenantSettings`](../interfaces/Auth_api.SingleTenantSettings.md), `any`, {}, `any`\>\>
+
+#### Parameters
+
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `options?` | `AxiosRequestConfig`\<`any`, `any`\> | Override http request option. |
+
+#### Returns
+
+`Promise`\<`AxiosResponse`\<[`SingleTenantSettings`](../interfaces/Auth_api.SingleTenantSettings.md), `any`, {}, `any`\>\>
+
+**`Summary`**
+
+Retrieve the settings of the SaaS Infrastructure Management.
+
+**`Throws`**
+
+**`Memberof`**
+
+SingleTenantApi
+
+#### Defined in
+
+[src/generated/Auth/api.ts:8372](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/api.ts#L8372)
+
+___
+
+### updateSingleTenantSettings
+
+▸ **updateSingleTenantSettings**(`updateSingleTenantSettingsParam?`, `options?`): `Promise`\<`AxiosResponse`\<`void`, `any`, {}, `any`\>\>
+
+Updates configuration information for SaaS Infrastructure Management Returns error if SaaS Infrastructure Management feature cannot be enabled.
+
+#### Parameters
+
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `updateSingleTenantSettingsParam?` | [`UpdateSingleTenantSettingsParam`](../interfaces/Auth_api.UpdateSingleTenantSettingsParam.md) |  |
+| `options?` | `AxiosRequestConfig`\<`any`, `any`\> | Override http request option. |
+
+#### Returns
+
+`Promise`\<`AxiosResponse`\<`void`, `any`, {}, `any`\>\>
+
+**`Summary`**
+
+Update configuration information for SaaS Infrastructure Management
+
+**`Throws`**
+
+**`Memberof`**
+
+SingleTenantApi
+
+#### Defined in
+
+[src/generated/Auth/api.ts:8384](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/api.ts#L8384)

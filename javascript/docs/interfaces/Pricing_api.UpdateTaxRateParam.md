@@ -1,0 +1,48 @@
+[saasus-sdk](../README.md) / [Pricing/api](../modules/Pricing_api.md) / UpdateTaxRateParam
+
+# Interface: UpdateTaxRateParam
+
+[Pricing/api](../modules/Pricing_api.md).UpdateTaxRateParam
+
+**`Export`**
+
+UpdateTaxRateParam
+
+## Table of contents
+
+### Properties
+
+- [description](Pricing_api.UpdateTaxRateParam.md#description)
+- [display\_name](Pricing_api.UpdateTaxRateParam.md#display_name)
+
+## Properties
+
+### description
+
+• **description**: `string`
+
+Description
+
+**`Memberof`**
+
+UpdateTaxRateParam
+
+#### Defined in
+
+[src/generated/Pricing/api.ts:1744](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Pricing/api.ts#L1744)
+
+___
+
+### display\_name
+
+• **display\_name**: `string`
+
+Display name
+
+**`Memberof`**
+
+UpdateTaxRateParam
+
+#### Defined in
+
+[src/generated/Pricing/api.ts:1738](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Pricing/api.ts#L1738)
