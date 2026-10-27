@@ -1,0 +1,36 @@
+[saasus-sdk](../README.md) / [ApiLog/base](../modules/ApiLog_base.md) / RequestArgs
+
+# Interface: RequestArgs
+
+[ApiLog/base](../modules/ApiLog_base.md).RequestArgs
+
+**`Export`**
+
+RequestArgs
+
+## Table of contents
+
+### Properties
+
+- [options](ApiLog_base.RequestArgs.md#options)
+- [url](ApiLog_base.RequestArgs.md#url)
+
+## Properties
+
+### options
+
+• **options**: `AxiosRequestConfig`\<`any`, `any`\>
+
+#### Defined in
+
+[src/generated/ApiLog/base.ts:41](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/ApiLog/base.ts#L41)
+
+___
+
+### url
+
+• **url**: `string`
+
+#### Defined in
+
+[src/generated/ApiLog/base.ts:40](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/ApiLog/base.ts#L40)

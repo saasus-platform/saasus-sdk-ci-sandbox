@@ -1,0 +1,44 @@
+[saasus-sdk](../README.md) / [Auth/api](../modules/Auth_api.md) / IdentityProviderSaml
+
+# Interface: IdentityProviderSaml
+
+[Auth/api](../modules/Auth_api.md).IdentityProviderSaml
+
+**`Export`**
+
+IdentityProviderSaml
+
+## Table of contents
+
+### Properties
+
+- [email\_attribute](Auth_api.IdentityProviderSaml.md#email_attribute)
+- [metadata\_url](Auth_api.IdentityProviderSaml.md#metadata_url)
+
+## Properties
+
+### email\_attribute
+
+• **email\_attribute**: `string`
+
+**`Memberof`**
+
+IdentityProviderSaml
+
+#### Defined in
+
+[src/generated/Auth/api.ts:1071](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/api.ts#L1071)
+
+___
+
+### metadata\_url
+
+• **metadata\_url**: `string`
+
+**`Memberof`**
+
+IdentityProviderSaml
+
+#### Defined in
+
+[src/generated/Auth/api.ts:1065](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/api.ts#L1065)

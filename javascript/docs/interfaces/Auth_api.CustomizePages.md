@@ -1,0 +1,59 @@
+[saasus-sdk](../README.md) / [Auth/api](../modules/Auth_api.md) / CustomizePages
+
+# Interface: CustomizePages
+
+[Auth/api](../modules/Auth_api.md).CustomizePages
+
+**`Export`**
+
+CustomizePages
+
+## Table of contents
+
+### Properties
+
+- [password\_reset\_page](Auth_api.CustomizePages.md#password_reset_page)
+- [sign\_in\_page](Auth_api.CustomizePages.md#sign_in_page)
+- [sign\_up\_page](Auth_api.CustomizePages.md#sign_up_page)
+
+## Properties
+
+### password\_reset\_page
+
+• **password\_reset\_page**: [`CustomizePageProps`](Auth_api.CustomizePageProps.md)
+
+**`Memberof`**
+
+CustomizePages
+
+#### Defined in
+
+[src/generated/Auth/api.ts:833](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/api.ts#L833)
+
+___
+
+### sign\_in\_page
+
+• **sign\_in\_page**: [`CustomizePageProps`](Auth_api.CustomizePageProps.md)
+
+**`Memberof`**
+
+CustomizePages
+
+#### Defined in
+
+[src/generated/Auth/api.ts:827](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/api.ts#L827)
+
+___
+
+### sign\_up\_page
+
+• **sign\_up\_page**: [`CustomizePageProps`](Auth_api.CustomizePageProps.md)
+
+**`Memberof`**
+
+CustomizePages
+
+#### Defined in
+
+[src/generated/Auth/api.ts:821](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/api.ts#L821)

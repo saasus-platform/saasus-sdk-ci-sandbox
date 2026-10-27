@@ -1,0 +1,36 @@
+[saasus-sdk](../README.md) / [Auth/api](../modules/Auth_api.md) / DeviceRememberedStatus
+
+# Enumeration: DeviceRememberedStatus
+
+[Auth/api](../modules/Auth_api.md).DeviceRememberedStatus
+
+The status of whether a device is remembered. \"remembered\" enables device authentication, \"not_remembered\" disables it.
+
+**`Export`**
+
+## Table of contents
+
+### Enumeration Members
+
+- [NotRemembered](Auth_api.DeviceRememberedStatus.md#notremembered)
+- [Remembered](Auth_api.DeviceRememberedStatus.md#remembered)
+
+## Enumeration Members
+
+### NotRemembered
+
+• **NotRemembered** = ``"not_remembered"``
+
+#### Defined in
+
+[src/generated/Auth/api.ts:865](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/api.ts#L865)
+
+___
+
+### Remembered
+
+• **Remembered** = ``"remembered"``
+
+#### Defined in
+
+[src/generated/Auth/api.ts:864](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/api.ts#L864)
