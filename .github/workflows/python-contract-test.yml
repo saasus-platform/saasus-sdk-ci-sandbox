@@ -25,6 +25,8 @@
 # access_token に設定する。spec は bearer スキームを宣言しモックはその値を
 # 検証しないため、剥がす必要がない（Go/PHP と同じ理屈）。
 
+# 検証用トリガー: タグ v2.4.0（python/ スイート同梱）発行後の定常状態で
+# (A)(B)(C) 全緑を実測するための no-op 変更。verify/python-abc 専用でマージしない。
 name: Python SDK Contract Test
 
 on:
