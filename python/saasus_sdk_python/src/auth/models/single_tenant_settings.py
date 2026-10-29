@@ -19,7 +19,7 @@ import json
 
 
 
-from pydantic import BaseModel, Field, StrictBool, StrictStr
+from pydantic import ConfigDict, BaseModel, Field, StrictBool, StrictStr
 
 class SingleTenantSettings(BaseModel):
     """
@@ -31,11 +31,7 @@ class SingleTenantSettings(BaseModel):
     ddl_template_url: StrictStr = Field(..., description="S3 URL where the CloudFormationTemplate to be executed in the SaaS environment is stored")
     role_external_id: StrictStr = Field(..., description="External id used by SaaSus when AssumeRole to operate SaaS")
     __properties = ["enabled", "role_arn", "cloudformation_template_url", "ddl_template_url", "role_external_id"]
-
-    class Config:
-        """Pydantic configuration"""
-        allow_population_by_field_name = True
-        validate_assignment = True
+    model_config = ConfigDict(populate_by_name=True, validate_assignment=True)
 
     def to_str(self) -> str:
         """Returns the string representation of the model using alias"""

@@ -19,7 +19,7 @@ import warnings
 from pydantic import validate_arguments, ValidationError
 from typing_extensions import Annotated
 
-from pydantic import Field, StrictStr, conint
+from pydantic import Field, StrictStr
 
 from typing import Optional
 
@@ -2677,7 +2677,7 @@ class SaasUserApi(object):
             _request_auth=_params.get('_request_auth'))
 
     @validate_arguments
-    def search_saas_users(self, id : Annotated[Optional[StrictStr], Field(description="User ID")] = None, email : Annotated[Optional[StrictStr], Field(description="Email prefix")] = None, sign_in_id : Annotated[Optional[StrictStr], Field(description="Sign-in ID prefix")] = None, limit : Annotated[Optional[conint(strict=True, le=100, ge=1)], Field(description="Maximum number of items to retrieve")] = None, cursor : Annotated[Optional[StrictStr], Field(description="Cursor for cursor pagination")] = None, **kwargs) -> SearchSaasUsersResult:  # noqa: E501
+    def search_saas_users(self, id : Annotated[Optional[StrictStr], Field(description="User ID")] = None, email : Annotated[Optional[StrictStr], Field(description="Email prefix")] = None, sign_in_id : Annotated[Optional[StrictStr], Field(description="Sign-in ID prefix")] = None, limit : Annotated[Optional[Annotated[int, Field(strict=True, le=100, ge=1)]], Field(description="Maximum number of items to retrieve")] = None, cursor : Annotated[Optional[StrictStr], Field(description="Cursor for cursor pagination")] = None, **kwargs) -> SearchSaasUsersResult:  # noqa: E501
         """Search SaaS Users  # noqa: E501
 
         Search SaaS users by user ID, email, or sign-in ID.   # noqa: E501
@@ -2714,7 +2714,7 @@ class SaasUserApi(object):
         return self.search_saas_users_with_http_info(id, email, sign_in_id, limit, cursor, **kwargs)  # noqa: E501
 
     @validate_arguments
-    def search_saas_users_with_http_info(self, id : Annotated[Optional[StrictStr], Field(description="User ID")] = None, email : Annotated[Optional[StrictStr], Field(description="Email prefix")] = None, sign_in_id : Annotated[Optional[StrictStr], Field(description="Sign-in ID prefix")] = None, limit : Annotated[Optional[conint(strict=True, le=100, ge=1)], Field(description="Maximum number of items to retrieve")] = None, cursor : Annotated[Optional[StrictStr], Field(description="Cursor for cursor pagination")] = None, **kwargs) -> ApiResponse:  # noqa: E501
+    def search_saas_users_with_http_info(self, id : Annotated[Optional[StrictStr], Field(description="User ID")] = None, email : Annotated[Optional[StrictStr], Field(description="Email prefix")] = None, sign_in_id : Annotated[Optional[StrictStr], Field(description="Sign-in ID prefix")] = None, limit : Annotated[Optional[Annotated[int, Field(strict=True, le=100, ge=1)]], Field(description="Maximum number of items to retrieve")] = None, cursor : Annotated[Optional[StrictStr], Field(description="Cursor for cursor pagination")] = None, **kwargs) -> ApiResponse:  # noqa: E501
         """Search SaaS Users  # noqa: E501
 
         Search SaaS users by user ID, email, or sign-in ID.   # noqa: E501

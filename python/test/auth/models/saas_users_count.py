@@ -19,7 +19,7 @@ import json
 
 
 
-from pydantic import BaseModel, Field, StrictInt
+from pydantic import ConfigDict, BaseModel, Field, StrictInt
 
 class SaasUsersCount(BaseModel):
     """
@@ -28,11 +28,7 @@ class SaasUsersCount(BaseModel):
     count: StrictInt = Field(..., description="Count of SaaS users")
     updated_at: StrictInt = Field(..., description="Unix timestamp (seconds) of the last update")
     __properties = ["count", "updated_at"]
-
-    class Config:
-        """Pydantic configuration"""
-        allow_population_by_field_name = True
-        validate_assignment = True
+    model_config = ConfigDict(populate_by_name=True, validate_assignment=True)
 
     def to_str(self) -> str:
         """Returns the string representation of the model using alias"""

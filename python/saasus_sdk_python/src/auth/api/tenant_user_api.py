@@ -19,7 +19,7 @@ import warnings
 from pydantic import validate_arguments, ValidationError
 from typing_extensions import Annotated
 
-from pydantic import Field, StrictInt, StrictStr, conint
+from pydantic import Field, StrictInt, StrictStr
 
 from typing import Optional
 
@@ -1520,7 +1520,7 @@ class TenantUserApi(object):
             _request_auth=_params.get('_request_auth'))
 
     @validate_arguments
-    def search_tenant_users(self, tenant_id : Annotated[Optional[StrictStr], Field(description="Tenant ID")] = None, id : Annotated[Optional[StrictStr], Field(description="User ID")] = None, email : Annotated[Optional[StrictStr], Field(description="Email prefix")] = None, sign_in_id : Annotated[Optional[StrictStr], Field(description="Sign-in ID prefix")] = None, env_id : Annotated[Optional[conint(strict=True, ge=1)], Field(description="Environment ID")] = None, role_name : Annotated[Optional[StrictStr], Field(description="Role Name")] = None, limit : Annotated[Optional[conint(strict=True, le=100, ge=1)], Field(description="Maximum number of items to retrieve")] = None, cursor : Annotated[Optional[StrictStr], Field(description="Cursor for cursor pagination")] = None, **kwargs) -> SearchTenantUsersResult:  # noqa: E501
+    def search_tenant_users(self, tenant_id : Annotated[Optional[StrictStr], Field(description="Tenant ID")] = None, id : Annotated[Optional[StrictStr], Field(description="User ID")] = None, email : Annotated[Optional[StrictStr], Field(description="Email prefix")] = None, sign_in_id : Annotated[Optional[StrictStr], Field(description="Sign-in ID prefix")] = None, env_id : Annotated[Optional[Annotated[int, Field(strict=True, ge=1)]], Field(description="Environment ID")] = None, role_name : Annotated[Optional[StrictStr], Field(description="Role Name")] = None, limit : Annotated[Optional[Annotated[int, Field(strict=True, le=100, ge=1)]], Field(description="Maximum number of items to retrieve")] = None, cursor : Annotated[Optional[StrictStr], Field(description="Cursor for cursor pagination")] = None, **kwargs) -> SearchTenantUsersResult:  # noqa: E501
         """Search Tenant Users  # noqa: E501
 
         Search tenant users by user id, tenant id, email, sign-in ID, env, or role.   # noqa: E501
@@ -1563,7 +1563,7 @@ class TenantUserApi(object):
         return self.search_tenant_users_with_http_info(tenant_id, id, email, sign_in_id, env_id, role_name, limit, cursor, **kwargs)  # noqa: E501
 
     @validate_arguments
-    def search_tenant_users_with_http_info(self, tenant_id : Annotated[Optional[StrictStr], Field(description="Tenant ID")] = None, id : Annotated[Optional[StrictStr], Field(description="User ID")] = None, email : Annotated[Optional[StrictStr], Field(description="Email prefix")] = None, sign_in_id : Annotated[Optional[StrictStr], Field(description="Sign-in ID prefix")] = None, env_id : Annotated[Optional[conint(strict=True, ge=1)], Field(description="Environment ID")] = None, role_name : Annotated[Optional[StrictStr], Field(description="Role Name")] = None, limit : Annotated[Optional[conint(strict=True, le=100, ge=1)], Field(description="Maximum number of items to retrieve")] = None, cursor : Annotated[Optional[StrictStr], Field(description="Cursor for cursor pagination")] = None, **kwargs) -> ApiResponse:  # noqa: E501
+    def search_tenant_users_with_http_info(self, tenant_id : Annotated[Optional[StrictStr], Field(description="Tenant ID")] = None, id : Annotated[Optional[StrictStr], Field(description="User ID")] = None, email : Annotated[Optional[StrictStr], Field(description="Email prefix")] = None, sign_in_id : Annotated[Optional[StrictStr], Field(description="Sign-in ID prefix")] = None, env_id : Annotated[Optional[Annotated[int, Field(strict=True, ge=1)]], Field(description="Environment ID")] = None, role_name : Annotated[Optional[StrictStr], Field(description="Role Name")] = None, limit : Annotated[Optional[Annotated[int, Field(strict=True, le=100, ge=1)]], Field(description="Maximum number of items to retrieve")] = None, cursor : Annotated[Optional[StrictStr], Field(description="Cursor for cursor pagination")] = None, **kwargs) -> ApiResponse:  # noqa: E501
         """Search Tenant Users  # noqa: E501
 
         Search tenant users by user id, tenant id, email, sign-in ID, env, or role.   # noqa: E501

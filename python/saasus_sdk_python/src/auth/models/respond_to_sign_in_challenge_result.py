@@ -19,7 +19,7 @@ import json
 
 
 from typing import Dict, Optional
-from pydantic import BaseModel, Field, StrictStr
+from pydantic import ConfigDict, BaseModel, Field, StrictStr
 from saasus_sdk_python.src.auth.models.challenge_name import ChallengeName
 from saasus_sdk_python.src.auth.models.credentials import Credentials
 from saasus_sdk_python.src.auth.models.new_device_metadata import NewDeviceMetadata
@@ -34,11 +34,7 @@ class RespondToSignInChallengeResult(BaseModel):
     session: Optional[StrictStr] = Field(None, description="Session identifier for the challenge. This session should be passed to the next call to RespondToSignInChallenge if another challenge is required. ")
     new_device_metadata: Optional[NewDeviceMetadata] = None
     __properties = ["credentials", "challenge_name", "challenge_parameters", "session", "new_device_metadata"]
-
-    class Config:
-        """Pydantic configuration"""
-        allow_population_by_field_name = True
-        validate_assignment = True
+    model_config = ConfigDict(populate_by_name=True, validate_assignment=True)
 
     def to_str(self) -> str:
         """Returns the string representation of the model using alias"""
