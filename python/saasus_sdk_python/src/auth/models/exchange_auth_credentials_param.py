@@ -19,7 +19,8 @@ import json
 
 
 from typing import Optional
-from pydantic import BaseModel, Field, StrictStr, constr, validator
+from pydantic import field_validator, StringConstraints, ConfigDict, BaseModel, Field, StrictStr
+from typing_extensions import Annotated
 
 class ExchangeAuthCredentialsParam(BaseModel):
     """
@@ -27,17 +28,19 @@ class ExchangeAuthCredentialsParam(BaseModel):
     """
     auth_flow: StrictStr = Field(..., description="Authentication flow used for the exchange")
     code: Optional[StrictStr] = None
-    code_verifier: Optional[constr(strict=True, max_length=128, min_length=43)] = Field(None, description="PKCE code verifier associated with the temporary code")
+    code_verifier: Optional[Annotated[str, StringConstraints(strict=True, max_length=128, min_length=43)]] = Field(None, description="PKCE code verifier associated with the temporary code")
     __properties = ["auth_flow", "code", "code_verifier"]
 
-    @validator('auth_flow')
+    @field_validator('auth_flow')
+    @classmethod
     def auth_flow_validate_enum(cls, value):
         """Validates the enum"""
         if value not in ('tempCodeAuth'):
             raise ValueError("must be one of enum values ('tempCodeAuth')")
         return value
 
-    @validator('code_verifier')
+    @field_validator('code_verifier')
+    @classmethod
     def code_verifier_validate_regular_expression(cls, value):
         """Validates the regular expression"""
         if value is None:
@@ -46,11 +49,7 @@ class ExchangeAuthCredentialsParam(BaseModel):
         if not re.match(r"^[A-Za-z0-9\-._~]+$", value):
             raise ValueError(r"must validate the regular expression /^[A-Za-z0-9\-._~]+$/")
         return value
-
-    class Config:
-        """Pydantic configuration"""
-        allow_population_by_field_name = True
-        validate_assignment = True
+    model_config = ConfigDict(populate_by_name=True, validate_assignment=True)
 
     def to_str(self) -> str:
         """Returns the string representation of the model using alias"""

@@ -19,7 +19,7 @@ import json
 
 
 from typing import Optional
-from pydantic import BaseModel
+from pydantic import ConfigDict, BaseModel
 from saasus_sdk_python.src.auth.models.account_verification import AccountVerification
 from saasus_sdk_python.src.auth.models.device_configuration import DeviceConfiguration
 from saasus_sdk_python.src.auth.models.mfa_configuration import MfaConfiguration
@@ -40,11 +40,7 @@ class UpdateSignInSettingsParam(BaseModel):
     self_regist: Optional[SelfRegist] = None
     refresh_token_validity: Optional[RefreshTokenValidity] = None
     __properties = ["password_policy", "device_configuration", "mfa_configuration", "recaptcha_props", "account_verification", "self_regist", "refresh_token_validity"]
-
-    class Config:
-        """Pydantic configuration"""
-        allow_population_by_field_name = True
-        validate_assignment = True
+    model_config = ConfigDict(populate_by_name=True, validate_assignment=True)
 
     def to_str(self) -> str:
         """Returns the string representation of the model using alias"""
