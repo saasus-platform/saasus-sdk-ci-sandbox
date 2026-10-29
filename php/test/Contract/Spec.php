@@ -253,14 +253,9 @@ final class Spec
     }
 
     /**
-     * Drops the values Go's omitempty would omit before sending: null entries
-     * and empty maps/arrays. jane serializes a set-null property verbatim and
-     * encodes an empty PHP array as a JSON array ([]), so a spec example that
-     * carries null for a non-nullable field, or an additionalProperties object
-     * with no declared members, would otherwise build a request the mock
-     * rejects. Removing them matches the Go/Java harnesses, whose typed structs
-     * omit the same values, and loses no coverage: a dropped value is empty, so
-     * nothing nested stays unsent.
+     * Drops null and empty map/array values, matching the Go/Java harnesses'
+     * omitempty: jane serializes a set-null property and an empty array ([])
+     * verbatim, which the mock rejects.
      *
      * @param mixed $value
      * @return mixed

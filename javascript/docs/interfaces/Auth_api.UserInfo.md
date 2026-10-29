@@ -32,7 +32,7 @@ UserInfo
 
 #### Defined in
 
-[src/generated/Auth/api.ts:3162](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/api.ts#L3162)
+[src/generated/Auth/api.ts:3162](https://github.com/saasus-platform/saasus-sdk-javascript/blob/cba23ee/src/generated/Auth/api.ts#L3162)
 
 ___
 
@@ -46,7 +46,7 @@ UserInfo
 
 #### Defined in
 
-[src/generated/Auth/api.ts:3156](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/api.ts#L3156)
+[src/generated/Auth/api.ts:3156](https://github.com/saasus-platform/saasus-sdk-javascript/blob/cba23ee/src/generated/Auth/api.ts#L3156)
 
 ___
 
@@ -62,7 +62,7 @@ UserInfo
 
 #### Defined in
 
-[src/generated/Auth/api.ts:3168](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/api.ts#L3168)
+[src/generated/Auth/api.ts:3168](https://github.com/saasus-platform/saasus-sdk-javascript/blob/cba23ee/src/generated/Auth/api.ts#L3168)
 
 ___
 
@@ -78,7 +78,7 @@ UserInfo
 
 #### Defined in
 
-[src/generated/Auth/api.ts:3180](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/api.ts#L3180)
+[src/generated/Auth/api.ts:3180](https://github.com/saasus-platform/saasus-sdk-javascript/blob/cba23ee/src/generated/Auth/api.ts#L3180)
 
 ___
 
@@ -98,4 +98,4 @@ UserInfo
 
 #### Defined in
 
-[src/generated/Auth/api.ts:3174](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/api.ts#L3174)
+[src/generated/Auth/api.ts:3174](https://github.com/saasus-platform/saasus-sdk-javascript/blob/cba23ee/src/generated/Auth/api.ts#L3174)

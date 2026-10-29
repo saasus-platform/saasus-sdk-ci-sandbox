@@ -32,7 +32,7 @@ RespondToSignInChallengeResult
 
 #### Defined in
 
-[src/generated/Auth/api.ts:1712](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/api.ts#L1712)
+[src/generated/Auth/api.ts:1712](https://github.com/saasus-platform/saasus-sdk-javascript/blob/cba23ee/src/generated/Auth/api.ts#L1712)
 
 ___
 
@@ -52,7 +52,7 @@ RespondToSignInChallengeResult
 
 #### Defined in
 
-[src/generated/Auth/api.ts:1718](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/api.ts#L1718)
+[src/generated/Auth/api.ts:1718](https://github.com/saasus-platform/saasus-sdk-javascript/blob/cba23ee/src/generated/Auth/api.ts#L1718)
 
 ___
 
@@ -66,7 +66,7 @@ RespondToSignInChallengeResult
 
 #### Defined in
 
-[src/generated/Auth/api.ts:1706](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/api.ts#L1706)
+[src/generated/Auth/api.ts:1706](https://github.com/saasus-platform/saasus-sdk-javascript/blob/cba23ee/src/generated/Auth/api.ts#L1706)
 
 ___
 
@@ -80,7 +80,7 @@ RespondToSignInChallengeResult
 
 #### Defined in
 
-[src/generated/Auth/api.ts:1730](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/api.ts#L1730)
+[src/generated/Auth/api.ts:1730](https://github.com/saasus-platform/saasus-sdk-javascript/blob/cba23ee/src/generated/Auth/api.ts#L1730)
 
 ___
 
@@ -96,4 +96,4 @@ RespondToSignInChallengeResult
 
 #### Defined in
 
-[src/generated/Auth/api.ts:1724](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/api.ts#L1724)
+[src/generated/Auth/api.ts:1724](https://github.com/saasus-platform/saasus-sdk-javascript/blob/cba23ee/src/generated/Auth/api.ts#L1724)

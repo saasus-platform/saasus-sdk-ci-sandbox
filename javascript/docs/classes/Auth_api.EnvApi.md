@@ -60,7 +60,7 @@ EnvApi
 
 #### Defined in
 
-[src/generated/Auth/base.ts:52](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/base.ts#L52)
+[src/generated/Auth/base.ts:52](https://github.com/saasus-platform/saasus-sdk-javascript/blob/cba23ee/src/generated/Auth/base.ts#L52)
 
 ## Properties
 
@@ -74,7 +74,7 @@ EnvApi
 
 #### Defined in
 
-[src/generated/Auth/base.ts:52](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/base.ts#L52)
+[src/generated/Auth/base.ts:52](https://github.com/saasus-platform/saasus-sdk-javascript/blob/cba23ee/src/generated/Auth/base.ts#L52)
 
 ___
 
@@ -88,7 +88,7 @@ ___
 
 #### Defined in
 
-[src/generated/Auth/base.ts:52](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/base.ts#L52)
+[src/generated/Auth/base.ts:52](https://github.com/saasus-platform/saasus-sdk-javascript/blob/cba23ee/src/generated/Auth/base.ts#L52)
 
 ___
 
@@ -102,7 +102,7 @@ ___
 
 #### Defined in
 
-[src/generated/Auth/base.ts:50](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/base.ts#L50)
+[src/generated/Auth/base.ts:50](https://github.com/saasus-platform/saasus-sdk-javascript/blob/cba23ee/src/generated/Auth/base.ts#L50)
 
 ## Methods
 
@@ -135,7 +135,7 @@ EnvApi
 
 #### Defined in
 
-[src/generated/Auth/api.ts:4924](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/api.ts#L4924)
+[src/generated/Auth/api.ts:4924](https://github.com/saasus-platform/saasus-sdk-javascript/blob/cba23ee/src/generated/Auth/api.ts#L4924)
 
 ___
 
@@ -168,7 +168,7 @@ EnvApi
 
 #### Defined in
 
-[src/generated/Auth/api.ts:4936](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/api.ts#L4936)
+[src/generated/Auth/api.ts:4936](https://github.com/saasus-platform/saasus-sdk-javascript/blob/cba23ee/src/generated/Auth/api.ts#L4936)
 
 ___
 
@@ -201,7 +201,7 @@ EnvApi
 
 #### Defined in
 
-[src/generated/Auth/api.ts:4948](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/api.ts#L4948)
+[src/generated/Auth/api.ts:4948](https://github.com/saasus-platform/saasus-sdk-javascript/blob/cba23ee/src/generated/Auth/api.ts#L4948)
 
 ___
 
@@ -233,7 +233,7 @@ EnvApi
 
 #### Defined in
 
-[src/generated/Auth/api.ts:4959](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/api.ts#L4959)
+[src/generated/Auth/api.ts:4959](https://github.com/saasus-platform/saasus-sdk-javascript/blob/cba23ee/src/generated/Auth/api.ts#L4959)
 
 ___
 
@@ -267,4 +267,4 @@ EnvApi
 
 #### Defined in
 
-[src/generated/Auth/api.ts:4972](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/api.ts#L4972)
+[src/generated/Auth/api.ts:4972](https://github.com/saasus-platform/saasus-sdk-javascript/blob/cba23ee/src/generated/Auth/api.ts#L4972)

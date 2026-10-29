@@ -26,4 +26,4 @@ StripeInfo
 
 #### Defined in
 
-[src/generated/Billing/api.ts:54](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Billing/api.ts#L54)
+[src/generated/Billing/api.ts:54](https://github.com/saasus-platform/saasus-sdk-javascript/blob/cba23ee/src/generated/Billing/api.ts#L54)

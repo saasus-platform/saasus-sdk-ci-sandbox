@@ -29,7 +29,7 @@ PricingTieredUnitForSaveAllOf
 
 #### Defined in
 
-[src/generated/Pricing/api.ts:944](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Pricing/api.ts#L944)
+[src/generated/Pricing/api.ts:944](https://github.com/saasus-platform/saasus-sdk-javascript/blob/cba23ee/src/generated/Pricing/api.ts#L944)
 
 ___
 
@@ -45,7 +45,7 @@ PricingTieredUnitForSaveAllOf
 
 #### Defined in
 
-[src/generated/Pricing/api.ts:938](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Pricing/api.ts#L938)
+[src/generated/Pricing/api.ts:938](https://github.com/saasus-platform/saasus-sdk-javascript/blob/cba23ee/src/generated/Pricing/api.ts#L938)
 
 ___
 
@@ -59,7 +59,7 @@ PricingTieredUnitForSaveAllOf
 
 #### Defined in
 
-[src/generated/Pricing/api.ts:926](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Pricing/api.ts#L926)
+[src/generated/Pricing/api.ts:926](https://github.com/saasus-platform/saasus-sdk-javascript/blob/cba23ee/src/generated/Pricing/api.ts#L926)
 
 ___
 
@@ -75,4 +75,4 @@ PricingTieredUnitForSaveAllOf
 
 #### Defined in
 
-[src/generated/Pricing/api.ts:932](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Pricing/api.ts#L932)
+[src/generated/Pricing/api.ts:932](https://github.com/saasus-platform/saasus-sdk-javascript/blob/cba23ee/src/generated/Pricing/api.ts#L932)

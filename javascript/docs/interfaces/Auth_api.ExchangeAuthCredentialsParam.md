@@ -30,7 +30,7 @@ ExchangeAuthCredentialsParam
 
 #### Defined in
 
-[src/generated/Auth/api.ts:971](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/api.ts#L971)
+[src/generated/Auth/api.ts:971](https://github.com/saasus-platform/saasus-sdk-javascript/blob/cba23ee/src/generated/Auth/api.ts#L971)
 
 ___
 
@@ -44,7 +44,7 @@ ExchangeAuthCredentialsParam
 
 #### Defined in
 
-[src/generated/Auth/api.ts:977](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/api.ts#L977)
+[src/generated/Auth/api.ts:977](https://github.com/saasus-platform/saasus-sdk-javascript/blob/cba23ee/src/generated/Auth/api.ts#L977)
 
 ___
 
@@ -60,4 +60,4 @@ ExchangeAuthCredentialsParam
 
 #### Defined in
 
-[src/generated/Auth/api.ts:983](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/api.ts#L983)
+[src/generated/Auth/api.ts:983](https://github.com/saasus-platform/saasus-sdk-javascript/blob/cba23ee/src/generated/Auth/api.ts#L983)

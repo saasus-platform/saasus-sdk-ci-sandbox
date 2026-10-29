@@ -59,7 +59,7 @@ UserAttributeApi
 
 #### Defined in
 
-[src/generated/Auth/base.ts:52](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/base.ts#L52)
+[src/generated/Auth/base.ts:52](https://github.com/saasus-platform/saasus-sdk-javascript/blob/cba23ee/src/generated/Auth/base.ts#L52)
 
 ## Properties
 
@@ -73,7 +73,7 @@ UserAttributeApi
 
 #### Defined in
 
-[src/generated/Auth/base.ts:52](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/base.ts#L52)
+[src/generated/Auth/base.ts:52](https://github.com/saasus-platform/saasus-sdk-javascript/blob/cba23ee/src/generated/Auth/base.ts#L52)
 
 ___
 
@@ -87,7 +87,7 @@ ___
 
 #### Defined in
 
-[src/generated/Auth/base.ts:52](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/base.ts#L52)
+[src/generated/Auth/base.ts:52](https://github.com/saasus-platform/saasus-sdk-javascript/blob/cba23ee/src/generated/Auth/base.ts#L52)
 
 ___
 
@@ -101,7 +101,7 @@ ___
 
 #### Defined in
 
-[src/generated/Auth/base.ts:50](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/base.ts#L50)
+[src/generated/Auth/base.ts:50](https://github.com/saasus-platform/saasus-sdk-javascript/blob/cba23ee/src/generated/Auth/base.ts#L50)
 
 ## Methods
 
@@ -134,7 +134,7 @@ UserAttributeApi
 
 #### Defined in
 
-[src/generated/Auth/api.ts:10881](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/api.ts#L10881)
+[src/generated/Auth/api.ts:10881](https://github.com/saasus-platform/saasus-sdk-javascript/blob/cba23ee/src/generated/Auth/api.ts#L10881)
 
 ___
 
@@ -167,7 +167,7 @@ UserAttributeApi
 
 #### Defined in
 
-[src/generated/Auth/api.ts:10893](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/api.ts#L10893)
+[src/generated/Auth/api.ts:10893](https://github.com/saasus-platform/saasus-sdk-javascript/blob/cba23ee/src/generated/Auth/api.ts#L10893)
 
 ___
 
@@ -200,7 +200,7 @@ UserAttributeApi
 
 #### Defined in
 
-[src/generated/Auth/api.ts:10905](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/api.ts#L10905)
+[src/generated/Auth/api.ts:10905](https://github.com/saasus-platform/saasus-sdk-javascript/blob/cba23ee/src/generated/Auth/api.ts#L10905)
 
 ___
 
@@ -232,4 +232,4 @@ UserAttributeApi
 
 #### Defined in
 
-[src/generated/Auth/api.ts:10916](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/api.ts#L10916)
+[src/generated/Auth/api.ts:10916](https://github.com/saasus-platform/saasus-sdk-javascript/blob/cba23ee/src/generated/Auth/api.ts#L10916)

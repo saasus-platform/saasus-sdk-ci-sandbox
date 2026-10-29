@@ -32,7 +32,7 @@ PlanReservation
 
 #### Defined in
 
-[src/generated/Auth/api.ts:1528](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/api.ts#L1528)
+[src/generated/Auth/api.ts:1528](https://github.com/saasus-platform/saasus-sdk-javascript/blob/cba23ee/src/generated/Auth/api.ts#L1528)
 
 ___
 
@@ -46,7 +46,7 @@ PlanReservation
 
 #### Defined in
 
-[src/generated/Auth/api.ts:1504](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/api.ts#L1504)
+[src/generated/Auth/api.ts:1504](https://github.com/saasus-platform/saasus-sdk-javascript/blob/cba23ee/src/generated/Auth/api.ts#L1504)
 
 ___
 
@@ -60,7 +60,7 @@ PlanReservation
 
 #### Defined in
 
-[src/generated/Auth/api.ts:1516](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/api.ts#L1516)
+[src/generated/Auth/api.ts:1516](https://github.com/saasus-platform/saasus-sdk-javascript/blob/cba23ee/src/generated/Auth/api.ts#L1516)
 
 ___
 
@@ -74,7 +74,7 @@ PlanReservation
 
 #### Defined in
 
-[src/generated/Auth/api.ts:1522](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/api.ts#L1522)
+[src/generated/Auth/api.ts:1522](https://github.com/saasus-platform/saasus-sdk-javascript/blob/cba23ee/src/generated/Auth/api.ts#L1522)
 
 ___
 
@@ -90,4 +90,4 @@ PlanReservation
 
 #### Defined in
 
-[src/generated/Auth/api.ts:1510](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/api.ts#L1510)
+[src/generated/Auth/api.ts:1510](https://github.com/saasus-platform/saasus-sdk-javascript/blob/cba23ee/src/generated/Auth/api.ts#L1510)

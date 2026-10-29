@@ -1,0 +1,24 @@
+
+
+# MfaPreference
+
+
+## Properties
+
+| Name | Type | Description | Notes |
+|------------ | ------------- | ------------- | -------------|
+|**enabled** | **Boolean** | enable MFA |  |
+|**method** | [**MethodEnum**](#MethodEnum) | MFA method (required if enabled is true) |  [optional] |
+
+
+
+## Enum: MethodEnum
+
+| Name | Value |
+|---- | -----|
+| SOFTWARETOKEN | &quot;softwareToken&quot; |
+| EMAIL | &quot;email&quot; |
+| UNKNOWN_DEFAULT_OPEN_API | &quot;unknown_default_open_api&quot; |
+
+
+

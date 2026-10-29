@@ -19,7 +19,7 @@ import json
 
 
 from typing import Optional
-from pydantic import ConfigDict, BaseModel, Field, StrictStr
+from pydantic import BaseModel, Field, StrictStr
 
 class DeviceSecretVerifierConfig(BaseModel):
     """
@@ -28,7 +28,11 @@ class DeviceSecretVerifierConfig(BaseModel):
     password_verifier: Optional[StrictStr] = Field(None, description="A password verifier for a user's device. Used in SRP authentication.")
     salt: Optional[StrictStr] = Field(None, description="The salt for SRP authentication with the user's device.")
     __properties = ["password_verifier", "salt"]
-    model_config = ConfigDict(populate_by_name=True, validate_assignment=True)
+
+    class Config:
+        """Pydantic configuration"""
+        allow_population_by_field_name = True
+        validate_assignment = True
 
     def to_str(self) -> str:
         """Returns the string representation of the model using alias"""

@@ -32,7 +32,7 @@ CreateSaasUserParam
 
 #### Defined in
 
-[src/generated/Auth/api.ts:509](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/api.ts#L509)
+[src/generated/Auth/api.ts:509](https://github.com/saasus-platform/saasus-sdk-javascript/blob/cba23ee/src/generated/Auth/api.ts#L509)
 
 ___
 
@@ -48,7 +48,7 @@ CreateSaasUserParam
 
 #### Defined in
 
-[src/generated/Auth/api.ts:521](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/api.ts#L521)
+[src/generated/Auth/api.ts:521](https://github.com/saasus-platform/saasus-sdk-javascript/blob/cba23ee/src/generated/Auth/api.ts#L521)
 
 ___
 
@@ -64,4 +64,4 @@ CreateSaasUserParam
 
 #### Defined in
 
-[src/generated/Auth/api.ts:515](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/api.ts#L515)
+[src/generated/Auth/api.ts:515](https://github.com/saasus-platform/saasus-sdk-javascript/blob/cba23ee/src/generated/Auth/api.ts#L515)

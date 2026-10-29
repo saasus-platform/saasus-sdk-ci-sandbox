@@ -29,7 +29,7 @@ ModelError
 
 #### Defined in
 
-[src/generated/Billing/api.ts:41](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Billing/api.ts#L41)
+[src/generated/Billing/api.ts:41](https://github.com/saasus-platform/saasus-sdk-javascript/blob/cba23ee/src/generated/Billing/api.ts#L41)
 
 ___
 
@@ -45,4 +45,4 @@ ModelError
 
 #### Defined in
 
-[src/generated/Billing/api.ts:35](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Billing/api.ts#L35)
+[src/generated/Billing/api.ts:35](https://github.com/saasus-platform/saasus-sdk-javascript/blob/cba23ee/src/generated/Billing/api.ts#L35)

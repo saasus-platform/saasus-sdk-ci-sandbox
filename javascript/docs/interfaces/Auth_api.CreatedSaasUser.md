@@ -37,7 +37,7 @@ CreatedSaasUser
 
 #### Defined in
 
-[src/generated/Auth/api.ts:628](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/api.ts#L628)
+[src/generated/Auth/api.ts:628](https://github.com/saasus-platform/saasus-sdk-javascript/blob/cba23ee/src/generated/Auth/api.ts#L628)
 
 ___
 
@@ -53,7 +53,7 @@ CreatedSaasUser
 
 #### Defined in
 
-[src/generated/Auth/api.ts:616](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/api.ts#L616)
+[src/generated/Auth/api.ts:616](https://github.com/saasus-platform/saasus-sdk-javascript/blob/cba23ee/src/generated/Auth/api.ts#L616)
 
 ___
 
@@ -67,7 +67,7 @@ CreatedSaasUser
 
 #### Defined in
 
-[src/generated/Auth/api.ts:610](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/api.ts#L610)
+[src/generated/Auth/api.ts:610](https://github.com/saasus-platform/saasus-sdk-javascript/blob/cba23ee/src/generated/Auth/api.ts#L610)
 
 ___
 
@@ -83,7 +83,7 @@ CreatedSaasUser
 
 #### Defined in
 
-[src/generated/Auth/api.ts:634](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/api.ts#L634)
+[src/generated/Auth/api.ts:634](https://github.com/saasus-platform/saasus-sdk-javascript/blob/cba23ee/src/generated/Auth/api.ts#L634)
 
 ___
 
@@ -99,7 +99,7 @@ CreatedSaasUser
 
 #### Defined in
 
-[src/generated/Auth/api.ts:640](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/api.ts#L640)
+[src/generated/Auth/api.ts:640](https://github.com/saasus-platform/saasus-sdk-javascript/blob/cba23ee/src/generated/Auth/api.ts#L640)
 
 ___
 
@@ -115,4 +115,4 @@ CreatedSaasUser
 
 #### Defined in
 
-[src/generated/Auth/api.ts:622](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/api.ts#L622)
+[src/generated/Auth/api.ts:622](https://github.com/saasus-platform/saasus-sdk-javascript/blob/cba23ee/src/generated/Auth/api.ts#L622)

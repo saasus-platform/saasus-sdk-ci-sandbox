@@ -19,11 +19,10 @@ import json
 
 
 from typing import List, Optional
-from pydantic import field_validator, ConfigDict, BaseModel, Field, StrictInt, StrictStr
+from pydantic import BaseModel, Field, StrictInt, StrictStr, conlist, validator
 from saasus_sdk_python.src.pricing.models.aggregate_usage import AggregateUsage
 from saasus_sdk_python.src.pricing.models.currency import Currency
 from saasus_sdk_python.src.pricing.models.pricing_tier import PricingTier
-from typing_extensions import Annotated
 
 class PricingTieredUsageUnitForSave(BaseModel):
     """
@@ -34,20 +33,23 @@ class PricingTieredUsageUnitForSave(BaseModel):
     description: StrictStr = Field(..., description="Description")
     type: StrictStr = Field(...)
     currency: Currency = Field(...)
-    tiers: Annotated[List[PricingTier], Field()] = Field(...)
+    tiers: conlist(PricingTier) = Field(...)
     upper_count: StrictInt = Field(..., description="Upper limit")
     metering_unit_name: StrictStr = Field(..., description="Metering unit name")
     aggregate_usage: Optional[AggregateUsage] = None
     __properties = ["name", "display_name", "description", "type", "currency", "tiers", "upper_count", "metering_unit_name", "aggregate_usage"]
 
-    @field_validator('type')
-    @classmethod
+    @validator('type')
     def type_validate_enum(cls, value):
         """Validates the enum"""
         if value not in ('tiered_usage'):
             raise ValueError("must be one of enum values ('tiered_usage')")
         return value
-    model_config = ConfigDict(populate_by_name=True, validate_assignment=True)
+
+    class Config:
+        """Pydantic configuration"""
+        allow_population_by_field_name = True
+        validate_assignment = True
 
     def to_str(self) -> str:
         """Returns the string representation of the model using alias"""

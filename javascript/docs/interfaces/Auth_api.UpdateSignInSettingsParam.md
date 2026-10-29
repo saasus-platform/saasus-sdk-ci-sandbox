@@ -34,7 +34,7 @@ UpdateSignInSettingsParam
 
 #### Defined in
 
-[src/generated/Auth/api.ts:2895](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/api.ts#L2895)
+[src/generated/Auth/api.ts:2895](https://github.com/saasus-platform/saasus-sdk-javascript/blob/cba23ee/src/generated/Auth/api.ts#L2895)
 
 ___
 
@@ -48,7 +48,7 @@ UpdateSignInSettingsParam
 
 #### Defined in
 
-[src/generated/Auth/api.ts:2877](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/api.ts#L2877)
+[src/generated/Auth/api.ts:2877](https://github.com/saasus-platform/saasus-sdk-javascript/blob/cba23ee/src/generated/Auth/api.ts#L2877)
 
 ___
 
@@ -62,7 +62,7 @@ UpdateSignInSettingsParam
 
 #### Defined in
 
-[src/generated/Auth/api.ts:2883](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/api.ts#L2883)
+[src/generated/Auth/api.ts:2883](https://github.com/saasus-platform/saasus-sdk-javascript/blob/cba23ee/src/generated/Auth/api.ts#L2883)
 
 ___
 
@@ -76,7 +76,7 @@ UpdateSignInSettingsParam
 
 #### Defined in
 
-[src/generated/Auth/api.ts:2871](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/api.ts#L2871)
+[src/generated/Auth/api.ts:2871](https://github.com/saasus-platform/saasus-sdk-javascript/blob/cba23ee/src/generated/Auth/api.ts#L2871)
 
 ___
 
@@ -90,7 +90,7 @@ UpdateSignInSettingsParam
 
 #### Defined in
 
-[src/generated/Auth/api.ts:2889](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/api.ts#L2889)
+[src/generated/Auth/api.ts:2889](https://github.com/saasus-platform/saasus-sdk-javascript/blob/cba23ee/src/generated/Auth/api.ts#L2889)
 
 ___
 
@@ -104,7 +104,7 @@ UpdateSignInSettingsParam
 
 #### Defined in
 
-[src/generated/Auth/api.ts:2907](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/api.ts#L2907)
+[src/generated/Auth/api.ts:2907](https://github.com/saasus-platform/saasus-sdk-javascript/blob/cba23ee/src/generated/Auth/api.ts#L2907)
 
 ___
 
@@ -118,4 +118,4 @@ UpdateSignInSettingsParam
 
 #### Defined in
 
-[src/generated/Auth/api.ts:2901](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/api.ts#L2901)
+[src/generated/Auth/api.ts:2901](https://github.com/saasus-platform/saasus-sdk-javascript/blob/cba23ee/src/generated/Auth/api.ts#L2901)
