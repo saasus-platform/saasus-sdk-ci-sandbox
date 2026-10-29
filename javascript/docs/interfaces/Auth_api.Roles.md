@@ -26,4 +26,4 @@ Roles
 
 #### Defined in
 
-[src/generated/Auth/api.ts:1775](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/api.ts#L1775)
+[src/generated/Auth/api.ts:1775](https://github.com/saasus-platform/saasus-sdk-javascript/blob/cba23ee/src/generated/Auth/api.ts#L1775)

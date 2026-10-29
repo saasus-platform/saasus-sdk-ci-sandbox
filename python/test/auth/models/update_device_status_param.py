@@ -19,7 +19,7 @@ import json
 
 
 
-from pydantic import ConfigDict, BaseModel, Field, StrictStr
+from pydantic import BaseModel, Field, StrictStr
 from saasus_sdk_python.src.auth.models.device_remembered_status import DeviceRememberedStatus
 
 class UpdateDeviceStatusParam(BaseModel):
@@ -30,7 +30,11 @@ class UpdateDeviceStatusParam(BaseModel):
     device_key: StrictStr = Field(..., description="The unique identifier of the device.")
     device_remembered_status: DeviceRememberedStatus = Field(...)
     __properties = ["access_token", "device_key", "device_remembered_status"]
-    model_config = ConfigDict(populate_by_name=True, validate_assignment=True)
+
+    class Config:
+        """Pydantic configuration"""
+        allow_population_by_field_name = True
+        validate_assignment = True
 
     def to_str(self) -> str:
         """Returns the string representation of the model using alias"""

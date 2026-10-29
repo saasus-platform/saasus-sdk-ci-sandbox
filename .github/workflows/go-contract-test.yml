@@ -14,8 +14,7 @@
 # 1. go/ 配下で動く。本番 saasus-sdk-go ではSDKがリポジトリ直下にあるため、
 #    移植時は working-directory と paths を落とし、(C) の
 #    latest-release/go を latest-release に戻す。
-# 2. spec の ref を api のコミットに固定している。理由は下の該当ステップに書いた。
-# 3. ジョブ名が contract-test ではなく go-contract-test。1リポジトリに
+# 2. ジョブ名が contract-test ではなく go-contract-test。1リポジトリに
 #    複数言語のワークフローが同居するため、必須チェック名を言語ごとに
 #    一意にする必要がある。
 #
@@ -73,27 +72,11 @@ jobs:
           owner: Anti-Pattern-Inc
           repositories: saasus-api
 
-      # サンドボックス固有: ref を api のコミットに固定している。
-      #
-      # 本番は ref を省略してアクション側に最新安定タグを解決させる。ここで
-      # 固定するのは、(B) が検証するのは commit 済みの生成コードであり、その
-      # 生成元 spec と食い違うと (B) の赤がSDKの欠陥か spec の進行かを区別
-      # できなくなるため。go/generated は下記コミットの spec から
-      # generate_all.sh で生成したもので、両者は一対。
-      #
-      # 固定先 781a7703 は Anti-Pattern-Inc/saasus-api#2650（pricing の
-      # discriminated oneOf 対応と string 型フィールドの example 修正）の
-      # マージコミット。これより前の安定タグを使うと該当エンドポイントが
-      # モックから 500 を受ける。
-      #
-      # api が次の安定タグを切ったら、そのタグから再生成した生成コードを
-      # commit し、ここを ref 省略に戻す。
       - name: Fetch OpenAPI spec
         id: spec
         uses: saasus-platform/github-actions/.github/actions/fetch-openapi-spec@main
         with:
           token: ${{ steps.api-token.outputs.token }}
-          ref: 781a7703ddb9340758131ba8b9780108472490c6
 
       # 再生成はしない: マージされる成果物は commit 済みのコードである。
       # api リポジトリの "Update API Client" ワークフローがPRを開くときに

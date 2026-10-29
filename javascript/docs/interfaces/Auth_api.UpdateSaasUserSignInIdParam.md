@@ -28,4 +28,4 @@ UpdateSaasUserSignInIdParam
 
 #### Defined in
 
-[src/generated/Auth/api.ts:2858](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/api.ts#L2858)
+[src/generated/Auth/api.ts:2858](https://github.com/saasus-platform/saasus-sdk-javascript/blob/cba23ee/src/generated/Auth/api.ts#L2858)

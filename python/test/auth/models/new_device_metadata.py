@@ -19,7 +19,7 @@ import json
 
 
 from typing import Optional
-from pydantic import ConfigDict, BaseModel, Field, StrictStr
+from pydantic import BaseModel, Field, StrictStr
 
 class NewDeviceMetadata(BaseModel):
     """
@@ -28,7 +28,11 @@ class NewDeviceMetadata(BaseModel):
     device_key: Optional[StrictStr] = Field(None, description="Device key identifier")
     device_group_key: Optional[StrictStr] = Field(None, description="Device group key identifier")
     __properties = ["device_key", "device_group_key"]
-    model_config = ConfigDict(populate_by_name=True, validate_assignment=True)
+
+    class Config:
+        """Pydantic configuration"""
+        allow_population_by_field_name = True
+        validate_assignment = True
 
     def to_str(self) -> str:
         """Returns the string representation of the model using alias"""

@@ -19,7 +19,7 @@ import json
 
 
 
-from pydantic import ConfigDict, BaseModel, Field, StrictInt
+from pydantic import BaseModel, Field, StrictInt
 from saasus_sdk_python.src.auth.models.refresh_token_validity_unit import RefreshTokenValidityUnit
 
 class RefreshTokenValidity(BaseModel):
@@ -29,7 +29,11 @@ class RefreshTokenValidity(BaseModel):
     value: StrictInt = Field(..., description="Refresh token validity value. The duration must be between 60 minutes and 10 years. ")
     unit: RefreshTokenValidityUnit = Field(...)
     __properties = ["value", "unit"]
-    model_config = ConfigDict(populate_by_name=True, validate_assignment=True)
+
+    class Config:
+        """Pydantic configuration"""
+        allow_population_by_field_name = True
+        validate_assignment = True
 
     def to_str(self) -> str:
         """Returns the string representation of the model using alias"""

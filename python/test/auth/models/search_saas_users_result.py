@@ -19,18 +19,21 @@ import json
 
 
 from typing import List, Optional
-from pydantic import ConfigDict, BaseModel, Field, StrictStr
+from pydantic import BaseModel, Field, StrictStr, conlist
 from saasus_sdk_python.src.auth.models.saas_user import SaasUser
-from typing_extensions import Annotated
 
 class SearchSaasUsersResult(BaseModel):
     """
     SearchSaasUsersResult
     """
-    users: Annotated[List[SaasUser], Field()] = Field(...)
+    users: conlist(SaasUser) = Field(...)
     cursor: Optional[StrictStr] = Field(None, description="Pagination cursor for the next page")
     __properties = ["users", "cursor"]
-    model_config = ConfigDict(populate_by_name=True, validate_assignment=True)
+
+    class Config:
+        """Pydantic configuration"""
+        allow_population_by_field_name = True
+        validate_assignment = True
 
     def to_str(self) -> str:
         """Returns the string representation of the model using alias"""

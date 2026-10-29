@@ -55,60 +55,78 @@ func (bearerTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 
 var httpClient = &http.Client{Transport: bearerTransport{}}
 
-// modules lists the generated clients. Go cannot enumerate packages at run
-// time, so this is the only place that names them.
-var modules = []struct {
-	name   string
-	client func(baseURL string) (any, error)
-}{
-	{"apilog", func(u string) (any, error) {
+// clients maps a module name to its generated client. Go cannot enumerate
+// packages at run time, so this is the only place that names them — but it does
+// not decide what is tested: CONTRACT_MODULES does, and a module listed there
+// with no entry here is reported as unmapped below.
+var clients = map[string]func(baseURL string) (any, error){
+	"apilog": func(u string) (any, error) {
 		return apilogapi.NewClientWithResponses(u, apilogapi.WithHTTPClient(httpClient))
-	}},
-	{"auth", func(u string) (any, error) {
+	},
+	"auth": func(u string) (any, error) {
 		return authapi.NewClientWithResponses(u, authapi.WithHTTPClient(httpClient))
-	}},
-	{"awsmarketplace", func(u string) (any, error) {
+	},
+	"awsmarketplace": func(u string) (any, error) {
 		return awsmarketplaceapi.NewClientWithResponses(u, awsmarketplaceapi.WithHTTPClient(httpClient))
-	}},
-	{"billing", func(u string) (any, error) {
+	},
+	"billing": func(u string) (any, error) {
 		return billingapi.NewClientWithResponses(u, billingapi.WithHTTPClient(httpClient))
-	}},
-	{"communication", func(u string) (any, error) {
+	},
+	"communication": func(u string) (any, error) {
 		return communicationapi.NewClientWithResponses(u, communicationapi.WithHTTPClient(httpClient))
-	}},
-	{"integration", func(u string) (any, error) {
+	},
+	"integration": func(u string) (any, error) {
 		return integrationapi.NewClientWithResponses(u, integrationapi.WithHTTPClient(httpClient))
-	}},
-	{"pricing", func(u string) (any, error) {
+	},
+	"pricing": func(u string) (any, error) {
 		return pricingapi.NewClientWithResponses(u, pricingapi.WithHTTPClient(httpClient))
-	}},
+	},
 }
 
 // TestContract runs one case per operation (and per request-body variant).
 //
-// CONTRACT_SPEC_DIR points at the <module>.yml files; PRISM_URL_<MODULE> gives
-// each module's mock. A module without a mock contributes no case, so the suite
-// can be run against a single module locally.
+// CONTRACT_SPEC_DIR points at the <module>.yml files; CONTRACT_MODULES carries
+// the module list; PRISM_URL_<MODULE> gives each module's mock. A module
+// without a mock contributes no case, so the suite can be run against a single
+// module locally.
 func TestContract(t *testing.T) {
 	specDir := os.Getenv("CONTRACT_SPEC_DIR")
 	if specDir == "" {
 		t.Skip("CONTRACT_SPEC_DIR is not set")
 	}
+	// Declared once, in the shared fetch-openapi-spec action, and passed from
+	// there to both the Prism setup and here, so the modules mocked and the
+	// modules tested cannot drift apart. No default: it would be a second copy
+	// of the list, and would let the suite test fewer modules than were mocked.
+	names := strings.Fields(os.Getenv("CONTRACT_MODULES"))
+	if len(names) == 0 {
+		t.Fatal("CONTRACT_MODULES is empty: it carries the module list from the fetch-openapi-spec action" +
+			" (locally: CONTRACT_MODULES=auth PRISM_URL_AUTH=http://127.0.0.1:4010 go test ./contract/)")
+	}
 
 	var missing []string
 	ran := 0
-	for _, module := range modules {
-		baseURL := os.Getenv("PRISM_URL_" + strings.ToUpper(module.name))
+	for _, name := range names {
+		newClient, ok := clients[name]
+		if !ok {
+			// No client for the module: for the candidate SDK a module absent
+			// from this suite, for a previously released one a module that did
+			// not exist yet. Either way its operations go unverified, which is
+			// what CONTRACT_REQUIRE_COMPLETE enforces for the candidate only.
+			missing = append(missing, name+".*")
+			continue
+		}
+		baseURL := os.Getenv("PRISM_URL_" + strings.ToUpper(name))
 		if baseURL == "" {
 			continue
 		}
-		s, err := loadSpec(specDir, module.name)
+		s, err := loadSpec(specDir, name)
 		if err != nil {
-			t.Fatalf("%s: cannot load spec: %v", module.name, err)
+			t.Fatalf("%s: cannot load spec: %v", name, err)
 		}
-		client, err := module.client(baseURL)
+		client, err := newClient(baseURL)
 		if err != nil {
-			t.Fatalf("%s: cannot build client: %v", module.name, err)
+			t.Fatalf("%s: cannot build client: %v", name, err)
 		}
 		value := reflect.ValueOf(client)
 
@@ -116,7 +134,7 @@ func TestContract(t *testing.T) {
 			op := s.ops[id]
 			method := value.MethodByName(id + "WithResponse")
 			if !method.IsValid() {
-				missing = append(missing, module.name+"."+id)
+				missing = append(missing, name+"."+id)
 				continue
 			}
 			labels := s.bodyVariants(op)
@@ -124,12 +142,12 @@ func TestContract(t *testing.T) {
 				labels = []string{""}
 			}
 			for i, label := range labels {
-				name := module.name + "." + id
+				caseName := name + "." + id
 				if label != "" {
-					name += "(" + label + ")"
+					caseName += "(" + label + ")"
 				}
 				variantIndex := i
-				t.Run(name, func(t *testing.T) {
+				t.Run(caseName, func(t *testing.T) {
 					roundTrip(t, s, op, method, variantIndex)
 				})
 				ran++
@@ -145,6 +163,27 @@ func TestContract(t *testing.T) {
 	// the caller asks for it.
 	if os.Getenv("CONTRACT_REQUIRE_COMPLETE") == "true" && len(missing) > 0 {
 		t.Errorf("spec operations not present in the SDK: %v", missing)
+	}
+}
+
+// TestEveryGeneratedModuleIsUnderTest guards the direction CONTRACT_MODULES
+// cannot: a module generated into the SDK but absent from the shared module
+// list would contribute no case, so all of its operations would go unverified.
+// The generated directory is read because Go cannot enumerate packages.
+func TestEveryGeneratedModuleIsUnderTest(t *testing.T) {
+	entries, err := os.ReadDir("../generated")
+	if err != nil {
+		t.Fatalf("cannot read the generated directory: %v", err)
+	}
+	for _, entry := range entries {
+		if !entry.IsDir() || !strings.HasSuffix(entry.Name(), "api") {
+			continue
+		}
+		name := strings.TrimSuffix(entry.Name(), "api")
+		if _, ok := clients[name]; !ok {
+			t.Errorf("module %q is generated into the SDK but has no client in this suite:"+
+				" its operations would go unverified", name)
+		}
 	}
 }
 

@@ -67,7 +67,6 @@ SDK 契約テストの検証用サンドボックス。**配布物ではない�
 2. ワークフローから `working-directory` と `on.pull_request.paths` を落とす
 3. (C) の `working-directory` を `latest-release` に戻す
 4. ジョブ `name` を `contract-test` に戻す
-5. `Fetch OpenAPI spec` の `ref` を落とす（本番は最新安定タグを自動解決する）
 
 各ワークフローの先頭にサンドボックス固有の差分を列挙してあるので、そこを
 参照すること。

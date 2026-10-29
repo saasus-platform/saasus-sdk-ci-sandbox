@@ -36,7 +36,7 @@ CreateTenantUserParam
 
 #### Defined in
 
-[src/generated/Auth/api.ts:584](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/api.ts#L584)
+[src/generated/Auth/api.ts:584](https://github.com/saasus-platform/saasus-sdk-javascript/blob/cba23ee/src/generated/Auth/api.ts#L584)
 
 ___
 
@@ -52,7 +52,7 @@ CreateTenantUserParam
 
 #### Defined in
 
-[src/generated/Auth/api.ts:572](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/api.ts#L572)
+[src/generated/Auth/api.ts:572](https://github.com/saasus-platform/saasus-sdk-javascript/blob/cba23ee/src/generated/Auth/api.ts#L572)
 
 ___
 
@@ -68,4 +68,4 @@ CreateTenantUserParam
 
 #### Defined in
 
-[src/generated/Auth/api.ts:578](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/api.ts#L578)
+[src/generated/Auth/api.ts:578](https://github.com/saasus-platform/saasus-sdk-javascript/blob/cba23ee/src/generated/Auth/api.ts#L578)

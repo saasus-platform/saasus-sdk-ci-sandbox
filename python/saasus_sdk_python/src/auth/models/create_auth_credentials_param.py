@@ -19,8 +19,7 @@ import json
 
 
 from typing import Optional
-from pydantic import field_validator, StringConstraints, ConfigDict, BaseModel, Field, StrictStr
-from typing_extensions import Annotated
+from pydantic import BaseModel, Field, StrictStr, constr, validator
 
 class CreateAuthCredentialsParam(BaseModel):
     """
@@ -29,12 +28,11 @@ class CreateAuthCredentialsParam(BaseModel):
     id_token: StrictStr = Field(..., description="ID token")
     access_token: StrictStr = Field(..., description="Access token")
     refresh_token: Optional[StrictStr] = Field(None, description="Refresh token")
-    code_challenge: Optional[Annotated[str, StringConstraints(strict=True, max_length=128, min_length=43)]] = Field(None, description="PKCE code challenge derived from the code verifier. It must be specified together with code_challenge_method.")
+    code_challenge: Optional[constr(strict=True, max_length=128, min_length=43)] = Field(None, description="PKCE code challenge derived from the code verifier. It must be specified together with code_challenge_method.")
     code_challenge_method: Optional[StrictStr] = Field(None, description="Method used to derive the PKCE code challenge. It must be specified together with code_challenge.")
     __properties = ["id_token", "access_token", "refresh_token", "code_challenge", "code_challenge_method"]
 
-    @field_validator('code_challenge')
-    @classmethod
+    @validator('code_challenge')
     def code_challenge_validate_regular_expression(cls, value):
         """Validates the regular expression"""
         if value is None:
@@ -44,8 +42,7 @@ class CreateAuthCredentialsParam(BaseModel):
             raise ValueError(r"must validate the regular expression /^[A-Za-z0-9\-._~]+$/")
         return value
 
-    @field_validator('code_challenge_method')
-    @classmethod
+    @validator('code_challenge_method')
     def code_challenge_method_validate_enum(cls, value):
         """Validates the enum"""
         if value is None:
@@ -54,7 +51,11 @@ class CreateAuthCredentialsParam(BaseModel):
         if value not in ('S256'):
             raise ValueError("must be one of enum values ('S256')")
         return value
-    model_config = ConfigDict(populate_by_name=True, validate_assignment=True)
+
+    class Config:
+        """Pydantic configuration"""
+        allow_population_by_field_name = True
+        validate_assignment = True
 
     def to_str(self) -> str:
         """Returns the string representation of the model using alias"""

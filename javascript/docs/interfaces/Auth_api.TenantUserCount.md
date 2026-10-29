@@ -30,7 +30,7 @@ TenantUserCount
 
 #### Defined in
 
-[src/generated/Auth/api.ts:2513](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/api.ts#L2513)
+[src/generated/Auth/api.ts:2513](https://github.com/saasus-platform/saasus-sdk-javascript/blob/cba23ee/src/generated/Auth/api.ts#L2513)
 
 ___
 
@@ -44,7 +44,7 @@ TenantUserCount
 
 #### Defined in
 
-[src/generated/Auth/api.ts:2507](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/api.ts#L2507)
+[src/generated/Auth/api.ts:2507](https://github.com/saasus-platform/saasus-sdk-javascript/blob/cba23ee/src/generated/Auth/api.ts#L2507)
 
 ___
 
@@ -60,4 +60,4 @@ TenantUserCount
 
 #### Defined in
 
-[src/generated/Auth/api.ts:2519](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/api.ts#L2519)
+[src/generated/Auth/api.ts:2519](https://github.com/saasus-platform/saasus-sdk-javascript/blob/cba23ee/src/generated/Auth/api.ts#L2519)

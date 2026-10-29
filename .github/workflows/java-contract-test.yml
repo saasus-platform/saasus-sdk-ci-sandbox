@@ -1,0 +1,146 @@
+# Java の SDK 契約テスト。
+#
+#   (A) 候補SDKがビルドできる
+#   (B) そのリクエストが最新specのモックに受理され、レスポンスがデシリアライズできる
+#   (C) 直近リリースが最新specに対してなお往復できる
+#
+# 言語非依存の処理は saasus-platform/github-actions のコンポジットアクション。
+# Java 固有のビルド/テスト手順だけがここにある。
+#
+# pull_request のみ（pull_request_target は使わない）: fork PR に secrets は渡らない。
+#
+# --- 本番SDKリポジトリとの差分（サンドボックス固有） ---
+#
+# 1. java/ 配下で動く。本番 saasus-sdk-java ではSDKがリポジトリ直下にあるため、
+#    移植時は working-directory と paths を落とし、(C) の
+#    latest-release/java を latest-release に戻す。
+# 2. ジョブ名が contract-test ではなく java-contract-test。1リポジトリに
+#    複数言語のワークフローが同居するため、必須チェック名を言語ごとに
+#    一意にする必要がある。
+#
+# C# 版にある「モックの security 要件を剥がす」ステップは Java には無い。
+# Java の契約テストは素の生成 ApiClient を直接叩き、合成 Bearer を
+# setAccessToken で設定する。spec は bearer スキームを宣言しモックはその値を
+# 検証しないため、剥がす必要がない（Go/PHP/Python/JavaScript と同じ理屈）。
+
+name: Java SDK Contract Test
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+    # 他言語のツリーだけを触るPRでJavaのジョブを動かさない。
+    paths:
+      - "java/**"
+      - ".github/workflows/java-contract-test.yml"
+
+concurrency:
+  group: sdk-contract-java-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  # 必須ステータスチェック名。リネームしないこと。
+  contract-test:
+    name: java-contract-test
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout PR (candidate SDK)
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - name: Set up JDK 8
+        uses: actions/setup-java@cf277c60eb25467037889841efdb72551f06f6c3 # v4
+        with:
+          distribution: temurin
+          java-version: "8"
+
+      - name: Set up Node (for Prism)
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: "20"
+
+      # 短命トークン。private な api リポジトリに contents:read のみ。
+      - name: Mint api read token
+        id: api-token
+        uses: actions/create-github-app-token@d72941d797fd3113feb6b93fd0dec494b13a2547 # v1
+        with:
+          app-id: ${{ secrets.SPEC_READER_APP_ID }}
+          private-key: ${{ secrets.SPEC_READER_PRIVATE_KEY }}
+          owner: Anti-Pattern-Inc
+          repositories: saasus-api
+
+      - name: Fetch OpenAPI spec
+        id: spec
+        uses: saasus-platform/github-actions/.github/actions/fetch-openapi-spec@main
+        with:
+          token: ${{ steps.api-token.outputs.token }}
+
+      # 再生成はしない: マージされる成果物は commit 済みのコードである。
+      # api リポジトリの "Update SDK" ワークフローはPRを開くときに
+      # generate.sh を走らせるが結果をコンパイルしないため、ここが生成コードを
+      # CI でコンパイルする最初の場所になる。
+      - name: (A) Build candidate SDK
+        working-directory: java
+        run: mvn -B -ntp -DskipTests test-compile
+
+      # static モード。レスポンスが spec の example から返るため oneOf が
+      # 解決可能になる。dynamic モードは example を無視する。
+      - name: Start Prism mocks
+        uses: saasus-platform/github-actions/.github/actions/setup-prism@main
+        with:
+          spec-dir: ${{ steps.spec.outputs.spec-dir }}
+          modules: ${{ steps.spec.outputs.modules }}
+
+      # モックのURLは setup が export した PRISM_URL_<MODULE> で渡る。
+      - name: (B) Candidate SDK contract
+        working-directory: java
+        env:
+          CONTRACT_SPEC_DIR: ${{ steps.spec.outputs.spec-dir }}
+          # 候補SDKは spec の全 operation を網羅していなければならない。
+          CONTRACT_REQUIRE_COMPLETE: "true"
+        run: mvn -B -ntp test -Dtest=saasus.sdk.contract.**
+
+      # モノレポなのでタグは言語横断の単一系列。タグのツリーには全言語が
+      # 入っているため、言語ごとのスイートはその中の自分のサブディレクトリに
+      # ある。
+      - name: Resolve latest release tag
+        id: release-tag
+        uses: saasus-platform/github-actions/.github/actions/resolve-latest-stable-tag@main
+
+      - name: Checkout latest release
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ steps.release-tag.outputs.tag }}
+          path: latest-release
+
+      # 現行ハーネスのコピーではなくリリースタグ自身のスイートを走らせる。
+      # 各リリースはそれが同梱していたテストで検証される。Prism と
+      # CONTRACT_SPEC_DIR はどちらも最新spec を指したまま。
+      #
+      # -Dtest でスイートを名指しするのは、スイートを同梱しないタグでも素の
+      # `mvn test` が通ってしまう（生成モデルのテストだけで BUILD SUCCESS に
+      # なる）ため。surefire は不在クラスで失敗し、スイート以前のタグを
+      # 設計通り落とす。クラス名は世代をまたいで不変でなければならない。
+      - name: (C) Latest release forward-compat (bundled suite)
+        env:
+          CONTRACT_SPEC_DIR: ${{ steps.spec.outputs.spec-dir }}
+        run: |
+          set -euo pipefail
+          cd latest-release/java
+          mvn -B -ntp test -Dtest=saasus.sdk.contract.**
+
+      # 何が走ったかの証跡: 各ケースはレポートの表示名になっている。(B) が先に
+      # 落ちてリリース側のレポートが無いこともあるため失敗時もアップロードし、
+      # if-no-files-found: ignore にしている。
+      - name: Upload JUnit contract reports
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: java-contract-test-reports
+          path: |
+            java/target/surefire-reports/**
+            latest-release/java/target/surefire-reports/**
+          if-no-files-found: ignore

@@ -29,7 +29,7 @@ CreateAuthCredentialsParamAllOf
 
 #### Defined in
 
-[src/generated/Auth/api.ts:483](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/api.ts#L483)
+[src/generated/Auth/api.ts:483](https://github.com/saasus-platform/saasus-sdk-javascript/blob/cba23ee/src/generated/Auth/api.ts#L483)
 
 ___
 
@@ -45,4 +45,4 @@ CreateAuthCredentialsParamAllOf
 
 #### Defined in
 
-[src/generated/Auth/api.ts:489](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/api.ts#L489)
+[src/generated/Auth/api.ts:489](https://github.com/saasus-platform/saasus-sdk-javascript/blob/cba23ee/src/generated/Auth/api.ts#L489)

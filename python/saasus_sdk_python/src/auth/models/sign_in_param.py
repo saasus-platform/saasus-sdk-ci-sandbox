@@ -19,7 +19,7 @@ import json
 
 
 from typing import Dict, Optional
-from pydantic import field_validator, ConfigDict, BaseModel, Field, StrictStr
+from pydantic import BaseModel, Field, StrictStr, validator
 
 class SignInParam(BaseModel):
     """
@@ -29,14 +29,17 @@ class SignInParam(BaseModel):
     sign_in_parameters: Optional[Dict[str, StrictStr]] = Field(None, description="The required parameters vary depending on the sign_in_flow. USER_SRP_AUTH:   USERNAME: email address   SRP_A: SRP A value ")
     __properties = ["sign_in_flow", "sign_in_parameters"]
 
-    @field_validator('sign_in_flow')
-    @classmethod
+    @validator('sign_in_flow')
     def sign_in_flow_validate_enum(cls, value):
         """Validates the enum"""
         if value not in ('USER_SRP_AUTH'):
             raise ValueError("must be one of enum values ('USER_SRP_AUTH')")
         return value
-    model_config = ConfigDict(populate_by_name=True, validate_assignment=True)
+
+    class Config:
+        """Pydantic configuration"""
+        allow_population_by_field_name = True
+        validate_assignment = True
 
     def to_str(self) -> str:
         """Returns the string representation of the model using alias"""

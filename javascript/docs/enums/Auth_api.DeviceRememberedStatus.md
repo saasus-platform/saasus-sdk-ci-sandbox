@@ -23,7 +23,7 @@ The status of whether a device is remembered. \"remembered\" enables device auth
 
 #### Defined in
 
-[src/generated/Auth/api.ts:865](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/api.ts#L865)
+[src/generated/Auth/api.ts:865](https://github.com/saasus-platform/saasus-sdk-javascript/blob/cba23ee/src/generated/Auth/api.ts#L865)
 
 ___
 
@@ -33,4 +33,4 @@ ___
 
 #### Defined in
 
-[src/generated/Auth/api.ts:864](https://github.com/saasus-platform/saasus-sdk-javascript/blob/4487d9d/src/generated/Auth/api.ts#L864)
+[src/generated/Auth/api.ts:864](https://github.com/saasus-platform/saasus-sdk-javascript/blob/cba23ee/src/generated/Auth/api.ts#L864)
