@@ -41,8 +41,9 @@ namespace authapi.Model
         /// </summary>
         /// <param name="email">E-mail.</param>
         /// <param name="signInId">Sign-in ID (alphanumeric and symbols -_ only, max 50 characters) .</param>
+        /// <param name="phoneNumber">Phone number.</param>
         /// <param name="attributes">Attribute information (Get information set by defining user attributes in the SaaS development console)  (required).</param>
-        public CreateTenantUserParam(string email = default(string), string signInId = default(string), Dictionary<string, Object> attributes = default(Dictionary<string, Object>))
+        public CreateTenantUserParam(string email = default(string), string signInId = default(string), string phoneNumber = default(string), Dictionary<string, Object> attributes = default(Dictionary<string, Object>))
         {
             // to ensure "attributes" is required (not null)
             if (attributes == null)
@@ -52,6 +53,7 @@ namespace authapi.Model
             this.Attributes = attributes;
             this.Email = email;
             this.SignInId = signInId;
+            this.PhoneNumber = phoneNumber;
         }
 
         /// <summary>
@@ -69,6 +71,14 @@ namespace authapi.Model
         /// <example>user123</example>
         [DataMember(Name = "sign_in_id", EmitDefaultValue = false)]
         public string SignInId { get; set; }
+
+        /// <summary>
+        /// Phone number
+        /// </summary>
+        /// <value>Phone number</value>
+        /// <example>+81-90-0000-0000</example>
+        [DataMember(Name = "phone_number", EmitDefaultValue = false)]
+        public string PhoneNumber { get; set; }
 
         /// <summary>
         /// Attribute information (Get information set by defining user attributes in the SaaS development console) 
